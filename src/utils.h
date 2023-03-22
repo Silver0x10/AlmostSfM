@@ -8,24 +8,30 @@ using namespace std;
 
 namespace pr {
   
-  typedef vector<Eigen::Vector3f, Eigen::aligned_allocator<Eigen::Vector3f> > Vec3f;
+    // typedef Matrix<float, 3, 1> Vec3f;
+    typedef Eigen::Vector3f Vec3f;
 
+    struct Keypoint {
+        EIGEN_MAKE_ALIGNED_OPERATOR_NEW;
+        int id;
+        Vec3f direction_vector;
 
-  struct Camera {
-    int id;
-    Vec3f gt_position[3];
-    Vec3f gt_orientation[3];
-    Vec3f position[3];
-    Vec3f orientation[3];
+        Keypoint(int id, float direction_vector[3]);
+    };
 
-    // array<Keypoint> keypoints;
-  };
+    struct Camera {
+        EIGEN_MAKE_ALIGNED_OPERATOR_NEW;
+        int id;
+        Vec3f gt_position;
+        Vec3f gt_orientation;
+        Vec3f position;
+        Vec3f orientation;
+        vector<Keypoint> keypoints;
 
-  struct Keypoint {
-    int id;
-    Vec3f direction_vector[3];
-  };
+        Camera(int id, float gt_position[3], float gt_orientation[3], float position[3], float orientation[3]);
+    };
 
+void quaternion_to_angle(float orientation[3]);
 
 
 }
