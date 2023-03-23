@@ -85,4 +85,46 @@ namespace pr {
 
     // ------ end adapted implementation ------ 
 
+    vector<Camera> load_data(string dataset_path) {
+        vector<Camera> cameras;
+        
+        ifstream data_stream(dataset_path);
+        string line, line_type;
+
+        Camera* current_cam;
+        for(string line; getline(data_stream, line); ) {
+            istringstream line_stream(line);
+            line_stream >> line_type;
+
+            if(!line_type.compare("KF:")) { // Camera pose
+                int id;
+                float gt_position[3], gt_orientation[3], position[3], orientation[3];
+                line_stream >> id;
+                for(int i=0; i<3; ++i) line_stream >> gt_position[i];
+                for(int i=0; i<3; ++i) line_stream >> gt_orientation[i];
+                for(int i=0; i<3; ++i) line_stream >> position[i];
+                for(int i=0; i<3; ++i) line_stream >> orientation[i];
+                
+                quaternion_to_RPY(gt_orientation);
+                quaternion_to_RPY(orientation);
+
+                Camera cam(id, gt_position, gt_orientation, position, orientation);
+                cameras.push_back(cam);
+                current_cam = &cameras.back();
+
+            }
+            else if(!line_type.compare("F:")) { // Keypoint
+                int prog_id, id;
+                line_stream >> prog_id >> id;
+                
+                float direction_vector[3];
+                for(int i=0; i<3; ++i) line_stream >> direction_vector[i];
+
+                Keypoint kp(id, direction_vector);
+                current_cam->keypoints.push_back(kp);
+            }
+        }
+        return cameras;
+    }
+
 }

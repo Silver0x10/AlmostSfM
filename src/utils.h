@@ -2,6 +2,8 @@
 #include <cmath>
 #include <iostream>
 #include <list>
+#include <fstream>
+#include <string>
 #include <vector>
 #include <Eigen/Core>
 #include <Eigen/Geometry>
@@ -37,5 +39,7 @@ namespace pr {
     void quaternion_to_RPY(float (&orientation)[3]);
 
     Matrix3f v2tRPY(const Vec3f& v);
+
+    vector<Camera> load_data(string dataset_path);
 
 }
