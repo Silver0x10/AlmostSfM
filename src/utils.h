@@ -1,4 +1,5 @@
 #pragma once
+#include <cmath>
 #include <iostream>
 #include <list>
 #include <vector>
@@ -31,7 +32,6 @@ namespace pr {
         Camera(int id, float gt_position[3], float gt_orientation[3], float position[3], float orientation[3]);
     };
 
-void quaternion_to_angle(float orientation[3]);
-
+    void quaternion_to_RPY(float (&orientation)[3]);
 
 }
