@@ -4,13 +4,15 @@
 #include <list>
 #include <vector>
 #include <Eigen/Core>
+#include <Eigen/Geometry>
 
 using namespace std;
 
 namespace pr {
   
-    // typedef Matrix<float, 3, 1> Vec3f;
-    typedef Eigen::Vector3f Vec3f;
+    // typedef Eigen::Vector3f Vec3f;
+    typedef Eigen::Matrix<float, 3, 1> Vec3f;
+    typedef Eigen::Matrix<float, 3, 3> Matrix3f;
 
     struct Keypoint {
         EIGEN_MAKE_ALIGNED_OPERATOR_NEW;
@@ -33,5 +35,7 @@ namespace pr {
     };
 
     void quaternion_to_RPY(float (&orientation)[3]);
+
+    Matrix3f v2tRPY(const Vec3f& v);
 
 }

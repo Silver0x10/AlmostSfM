@@ -46,5 +46,43 @@ namespace pr {
         // ------ end adapted implementation ------ 
     }
 
+    // Implementation adapted from: https://gitlab.com/grisetti/probabilistic_robotics_2022_23/-/blob/main/source/cpp/24_projective_icp/src/defs.h
+
+    inline Matrix3f Rx(float rot_x){
+        double c=cos(rot_x);
+        double s=sin(rot_x);
+        Matrix3f R;
+        R << 1,  0, 0,
+        0,  c,  -s,
+        0,  s,  c;
+        return R;
+    }
+    
+    inline Matrix3f Ry(float rot_y){
+        double c=cos(rot_y);
+        double s=sin(rot_y);
+        Matrix3f R;
+        R << c,  0,  s,
+        0 , 1,  0,
+        -s,  0, c;
+        return R;
+    }
+
+    inline Matrix3f Rz(float rot_z){
+        double c=cos(rot_z);
+        double s=sin(rot_z);
+        Matrix3f R;
+        R << c,  -s,  0,
+        s,  c,  0,
+        0,  0,  1;
+        return R;
+    }
+
+    Matrix3f v2tRPY(const Vec3f& v){
+        Matrix3f T = Rx(v[0])*Ry(v[1])*Rz(v[2]);
+        return T;
+    }
+
+    // ------ end adapted implementation ------ 
 
 }

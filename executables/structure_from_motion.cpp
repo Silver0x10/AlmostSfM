@@ -11,8 +11,8 @@ int main (int argc, char** argv) {
     string line, line_type;
 
     vector<Camera> cameras;
-    Camera* current_cam;
 
+    Camera* current_cam;
     for(string line; getline(data_stream, line); ) {
         istringstream line_stream(line);
         line_stream >> line_type;
@@ -47,9 +47,6 @@ int main (int argc, char** argv) {
         
     }
 
-    
-    // auto test = cameras[5].keypoints[5];
-    // cout << test.id << endl;
-    // cout << test.direction_vector << endl;
+    return 0;
 
 }
