@@ -44,6 +44,8 @@ namespace pr {
         float cosy_cosp = 1 - 2 * (qy * qy + qz * qz);
         orientation[2] = atan2(siny_cosp, cosy_cosp);
         // ------ end adapted implementation ------ 
+
+        for(auto& o: orientation) o = round(o * 100000.0) / 100000.0;
     }
 
     // Implementation adapted from: https://gitlab.com/grisetti/probabilistic_robotics_2022_23/-/blob/main/source/cpp/24_projective_icp/src/defs.h
