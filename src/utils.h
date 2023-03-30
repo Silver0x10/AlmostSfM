@@ -32,7 +32,7 @@ namespace pr {
         Vec3f position;
         Vec3f orientation;
         vector<Keypoint> keypoints;
-
+        
         Camera(int id, float gt_position[3], float gt_orientation[3], float position[3], float orientation[3]);
     };
 
@@ -41,5 +41,13 @@ namespace pr {
     Matrix3f v2tRPY(const Vec3f& v);
 
     vector<Camera> load_data(string dataset_path);
+
+    inline Matrix3f skew(const Vec3f& v){
+    Matrix3f S;
+    S << 0, -v[2], v[1],
+      v[2], 0, -v[0],
+      -v[1], v[0], 0;
+    return S;
+  }
 
 }
