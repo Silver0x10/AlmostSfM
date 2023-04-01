@@ -3,7 +3,7 @@
 
 namespace pr {
 
-    void error_and_jacobian_translation(const Vec3f& t_ij, const Matrix3f& rot_i, const Vec3f& t_i, const Vec3f& t_j, Vec3f& error, Eigen::MatrixXf& jacobian, int num_cameras, int i, int j) {
+    void error_and_jacobian_translation(const Vec3f& t_ij, const Matrix3f& rot_i, const Vec3f& t_i, const Vec3f& t_j, Vec3f& error, Eigen::MatrixXf& jacobians) {
         error = skew(t_ij) * rot_i.transpose() * (t_i - t_j);
 
         Matrix3f jac_t_i = skew(t_ij) * rot_i.transpose();
@@ -15,9 +15,9 @@ namespace pr {
            -delta_wrt_i[2],      0,                  delta_wrt_i[0], 
             delta_wrt_i[1],     -delta_wrt_i[0],     0; 
         
-        jacobian.block<3,3>(0, 3*(i*num_cameras)) = jac_t_i;
-        jacobian.block<3,3>(0, 3*(j*num_cameras)) = jac_t_j;
-        jacobian.block<3,3>(0, 3*(i*num_cameras + j)) = jac_t_ij;
+        jacobians.block<3,3>(0, 0) = jac_t_i;
+        jacobians.block<3,3>(0, 3) = jac_t_j;
+        jacobians.block<3,3>(0, 6) = jac_t_ij;
     }
 
 
@@ -27,12 +27,12 @@ namespace pr {
         Vec3f state[system_size];
         for(auto& t: state) t.setRandom(); // TODO: maybe consider damping factors instead 
         
-        Eigen::MatrixXf H(3*system_size, 3*system_size);
+        Eigen::MatrixXf matrixH(3*system_size, 3*system_size);
         Eigen::VectorXf b(3*system_size);
         
         // chi errror
 
-        H.setZero();
+        matrixH.setZero();
         b.setZero();
         
 
@@ -44,8 +44,11 @@ namespace pr {
                 const auto& t_j = state[j*num_cameras];
                 
                 Vec3f error;
-                Eigen::MatrixXf jacobian(3, 3*system_size); // TODO: use only the modified elments instead of the entire matrix
-                error_and_jacobian_translation(t_ij, rot_i, t_i, t_j, error, jacobian, num_cameras, i, j);
+                Eigen::MatrixXf jacobians(3, 9);
+                error_and_jacobian_translation(t_ij, rot_i, t_i, t_j, error, jacobians);
+                auto jac_t_i = jacobians.block<3,3>(0, 0) + Eigen::Matrix3f::Identity();
+                auto jac_t_j = jacobians.block<3,3>(0, 3) +Eigen::Matrix3f::Identity();
+                auto jac_t_ij = jacobians.block<3,3>(0, 6)+Eigen::Matrix3f::Identity();
 
                 // H += jacobian.transpose()*jacobian;
                 // b += jacobian.transpose()*error;
