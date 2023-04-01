@@ -1,5 +1,6 @@
 // #pragma once
 #include "init_translations.h"
+#include <Eigen/Cholesky>
 
 namespace pr {
 
@@ -51,15 +52,30 @@ namespace pr {
                 auto jac_t_ij = jacobians.block<3,3>(0, 6)+Eigen::Matrix3f::Identity();
 
                 // H += jacobian.transpose()*jacobian;
+                matrixH.block<3,3>(3*(i*num_cameras), 3*(i*num_cameras))     += jac_t_i.transpose()*jac_t_i;
+                matrixH.block<3,3>(3*(i*num_cameras), 3*(i*num_cameras + j)) += jac_t_i.transpose()*jac_t_ij;
+                matrixH.block<3,3>(3*(i*num_cameras), 3*(j*num_cameras))     += jac_t_i.transpose()*jac_t_j;
+
+                matrixH.block<3,3>(3*(i*num_cameras + j), 3*(i*num_cameras))     += jac_t_ij.transpose()*jac_t_i;
+                matrixH.block<3,3>(3*(i*num_cameras + j), 3*(i*num_cameras + j)) += jac_t_ij.transpose()*jac_t_ij;
+                matrixH.block<3,3>(3*(i*num_cameras + j), 3*(j*num_cameras))     += jac_t_ij.transpose()*jac_t_j;
+
+                matrixH.block<3,3>(3*(j*num_cameras), 3*(i*num_cameras))     += jac_t_j.transpose()*jac_t_i;
+                matrixH.block<3,3>(3*(j*num_cameras), 3*(i*num_cameras + j)) += jac_t_j.transpose()*jac_t_ij;
+                matrixH.block<3,3>(3*(j*num_cameras), 3*(j*num_cameras))     += jac_t_j.transpose()*jac_t_j;
+                
                 // b += jacobian.transpose()*error;
+                b.segment<3>(3*(i*num_cameras))     += jac_t_i.transpose()*error;
+                b.segment<3>(3*(i*num_cameras + j)) += jac_t_ij.transpose()*error;
+                b.segment<3>(3*(j*num_cameras))     += jac_t_j.transpose()*error;
 
                 cout << i << ' ' << j << endl;
             }
         }
 
-        // auto dx = H.ldlt().solve(-b); // TODO: ripasso Cholesky decomposition; consider the null space of H
-
-
+        // cout << sizeof(state)/sizeof(state[0])*3 << endl;
+        // auto dx = matrixH.ldlt().solve(-b); // TODO: ripasso Cholesky decomposition; consider the null space of H
+        // cout << dx.size() << endl;
 
     }
 
