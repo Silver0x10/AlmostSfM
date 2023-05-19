@@ -3,12 +3,13 @@
 #include <vector>
 #include "utils.h"
 #include "init_translations.h"
+#include "relative_position_calculator.h"
 
 using namespace std;
 using namespace pr;
 
 int main (int argc, char** argv) {
-    string dataset_path = "../dataset_and_info/dataset.txt";
+    string dataset_path = "../../dataset_and_info/dataset.txt";
     vector<Camera> cameras = load_data(dataset_path);
 
 

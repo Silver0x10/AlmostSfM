@@ -43,11 +43,17 @@ namespace pr {
     vector<Camera> load_data(string dataset_path);
 
     inline Matrix3f skew(const Vec3f& v){
-    Matrix3f S;
-    S << 0, -v[2], v[1],
-      v[2], 0, -v[0],
-      -v[1], v[0], 0;
-    return S;
-  }
+      Matrix3f S;
+      S << 0, -v[2], v[1],
+        v[2], 0, -v[0],
+        -v[1], v[0], 0;
+      return S;
+    }
+    
+    inline Vec3f skew2v(const Matrix3f& S){
+      Vec3f v;
+      v << S(2,1), S(0,2), S(1,0);
+      return v;
+    }
 
 }
