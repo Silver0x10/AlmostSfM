@@ -61,7 +61,7 @@ namespace pr {
         
         for(int i=1; i < (int)cameras.size(); i++){
             cameras[i].position = t_initialized.block<3,1>(3*(i-1), 0);
-            cout << cameras[i].position << "\n\n";
+            // cout << cameras[i].position << "\n\n";
         }
     }
 }

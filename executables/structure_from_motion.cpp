@@ -14,6 +14,7 @@ int main (int argc, char** argv) {
 
 
     init_translations(cameras);
+    eval_translations(cameras);
 
     return 0;
 
