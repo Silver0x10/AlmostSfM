@@ -4,6 +4,7 @@
 #include "utils.h"
 #include "init_translations.h"
 #include "relative_position_calculator.h"
+#include "triangulation.h"
 
 using namespace std;
 using namespace pr;
@@ -14,7 +15,8 @@ int main (int argc, char** argv) {
 
 
     init_translations(cameras);
-    eval_translations(cameras);
+    // eval_translations(cameras);
+    triangulate(cameras);
 
     return 0;
 
