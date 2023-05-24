@@ -32,14 +32,6 @@ namespace pr {
             l.second = matrix_H.fullPivLu().solve(b);
         }
 
-        // Save landmarks positions on file
-        ofstream landmarks_stream("landmarks.txt");
-        for(const auto& l: landmarks){
-            // cout << "L: " << l.first << "\t" << l.second.transpose() << endl;
-            landmarks_stream << "L: " << l.first << "\t" << l.second.transpose() << endl;
-        }
-        landmarks_stream.close();
-
         return landmarks;
     }
     

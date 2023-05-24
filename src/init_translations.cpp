@@ -23,7 +23,6 @@ namespace pr {
 
 
     void init_translations(vector<Camera>& cameras) {
-        cout << "Init translations..." << endl;
         int system_size = cameras.size() - 1;
 
         Vec3f state[system_size];
