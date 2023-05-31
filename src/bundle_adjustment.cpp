@@ -7,11 +7,9 @@ namespace pr {
 
         Matrix3f jac_t_i = skew(t_ij) * rot_i.transpose();
         Matrix3f jac_t_j = -jac_t_i;
-        // Matrix3f jac_t_k = ;
         
         jacobians.block<3,3>(0, 0) = jac_t_i;
         jacobians.block<3,3>(0, 3) = jac_t_j;
-        // jacobians.block<3,3>(0, 6) = jac_t_k;
     }
 
     void error_and_jacobian_position_landmark(const Camera& camera, const Vec3f& keypoint_dir_vector, const Vec3f& landmark, Vec3f& error, Eigen::MatrixXf& jacobians) {
@@ -34,18 +32,24 @@ namespace pr {
         Eigen::MatrixXf matrix_H(3*system_size, 3*system_size);
         Eigen::MatrixXf b(3*system_size, 1);
 
-        for (int iteration = 0; iteration < 10; iteration++) {
+        for (int iteration = 0; iteration < 5; iteration++) {
             cout << "BA iteration: " << iteration << endl;
             matrix_H.setZero();
             b.setZero();
+            float chi_tot = 0.0;
 
             for(const auto& cam: cameras) {
 
                 for(const auto& kp: cam.keypoints) {
                     Vec3f error;
                     Eigen::MatrixXf jacobians(3, 6);
-                    auto l = landmarks[landmark_id2index[kp.id]];
+                    Vec3f l = landmarks[kp.id];
                     error_and_jacobian_position_landmark(cam, kp.direction_vector, l, error, jacobians);
+                    float chi = error.transpose() * error;
+                    // if(chi > 1) cout << chi << endl;
+                    if(chi > 1) continue;
+
+                    chi_tot += chi;
                     Matrix3f jac_cam = (Matrix3f)(jacobians.block<3,3>(0, 0));
                     Matrix3f jac_landmark = (Matrix3f)(jacobians.block<3,3>(0, 3));
 
@@ -70,6 +74,11 @@ namespace pr {
                     Vec3f error;
                     Eigen::MatrixXf jacobians(3, 6);
                     error_and_jacobian_camera_poses(t_ij, rot_i, t_i, t_j, error, jacobians);
+                    float chi = error.transpose() * error;
+                    // if(chi > 1) cout << chi << endl;
+                    if(chi > 1) continue;
+
+                    chi_tot += chi;
                     Matrix3f jac_t_i = (Matrix3f)(jacobians.block<3,3>(0, 0));
                     Matrix3f jac_t_j = (Matrix3f)(jacobians.block<3,3>(0, 3)); 
                     
@@ -82,28 +91,27 @@ namespace pr {
                     b.block<3,1>(i, 0) += jac_t_i.transpose()*error;
                     b.block<3,1>(j, 0) += jac_t_j.transpose()*error;
                 }
-
-                matrix_H += Eigen::MatrixXf::Identity(3*system_size, 3*system_size);
-                Eigen::MatrixXf dx(3*system_size, 1);
-                dx.setZero();
-
-                dx = matrix_H.fullPivLu().solve(b);
-                // dx = matrix_H.ldlt().solve(b);
-                // cout << dx << endl << endl;
-
-                for(int i=0; i < (int)cameras.size(); i++) {
-                    Vec3f dx_i = dx.block<3,1>(3*i, 0);
-                    cameras[i].position += dx_i;
-                }
-
-                for(int i=cameras.size(); i < system_size; i++) {
-                    Vec3f dx_i = dx.block<3,1>(3*i, 0);
-                    landmarks[i]+= dx_i;
-                }
                 
             }
             
+            matrix_H += Eigen::MatrixXf::Identity(3*system_size, 3*system_size);
 
+            Eigen::MatrixXf dx(3*system_size, 1);
+            dx.setZero();
+            dx = matrix_H.fullPivLu().solve(b);
+            // dx = matrix_H.ldlt().solve(b);
+
+            cout << "chi_tot error: " << chi_tot << endl;
+
+            // State perturbation
+            for(int i=0; i < (int)cameras.size(); i++) {
+                Vec3f dx_i = dx.block<3,1>(3*i, 0);
+                cameras[i].position += dx_i;
+            }
+            for(int i=cameras.size(); i < system_size; i++) {
+                Vec3f dx_i = dx.block<3,1>(3*i, 0);
+                landmarks[landmark_index2id[i-cameras.size()]]+= dx_i;
+            }
 
 
         }
