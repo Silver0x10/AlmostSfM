@@ -7,9 +7,10 @@
 #include <Eigen/Cholesky>
 #include "utils.h"
 #include "relative_position_calculator.h"
-#include "init_translations.h"
 
 namespace pr {
+
+    void error_and_jacobian_camera_poses(const Vec3f& t_ij, const Matrix3f& rot_i, const Vec3f& t_i, const Vec3f& t_j, Vec3f& error, Eigen::MatrixXf& jacobians);
 
     void error_and_jacobian_position_landmark(const Camera& camera, const Vec3f& keypoint_dir_vector, const Vec3f& landmark, Vec3f& error, Eigen::MatrixXf& jacobians);
 

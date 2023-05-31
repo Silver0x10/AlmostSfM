@@ -13,32 +13,6 @@
 using namespace std;
 using namespace pr;
 
-void save_landmarks(const map<int, pr::Vec3f>& landmarks, string output_path){
-    ofstream landmarks_stream(output_path);
-    for(const auto& l: landmarks){
-        // cout << "L: " << l.first << "\t" << l.second.transpose() << endl;
-        landmarks_stream << "L: " << l.first << "\t" << l.second.transpose() << endl;
-    }
-    landmarks_stream.close();
-}
-
-map<int, pr::Vec3f> load_landmarks(string path){
-    map<int, pr::Vec3f> landmarks;
-
-    ifstream data_stream(path);
-    string line, line_type;
-    int id;
-    float x, y, z;
-    for(string line; getline(data_stream, line); ) {
-        istringstream line_stream(line);
-        line_stream >> line_type >> id >> x >> y >> z;
-        // cout << Vec3f(x,y,z) << endl << endl;
-        landmarks.insert({id, Vec3f(x,y,z)});
-    }
-
-    return landmarks;
-}
-
 void map_visualization(string landmarks_path,  string gt_landmarks_path){
     cv::viz::Viz3d window("Map visualization");
     cv::viz::Viz3d gt_window("GT Map visualization");
@@ -49,7 +23,7 @@ void map_visualization(string landmarks_path,  string gt_landmarks_path){
     for(const auto& l: landmarks) 
         landmarks_cv.push_back( cv::Point3d(l.second.x(), l.second.y(), l.second.z()) );
     cv::viz::WCloud landmarks_cloud(landmarks_cv, cv::viz::Color::yellow());
-    landmarks_cloud.setRenderingProperty( cv::viz::POINT_SIZE, 1.5 );
+    landmarks_cloud.setRenderingProperty( cv::viz::POINT_SIZE, 2 );
     window.showWidget("landmarks", landmarks_cloud);
     window.spin();
 
@@ -59,7 +33,7 @@ void map_visualization(string landmarks_path,  string gt_landmarks_path){
     for(const auto& l: gt_landmarks) 
         gt_landmarks_cv.push_back( cv::Point3d(l.second.x(), l.second.y(), l.second.z()) );
     cv::viz::WCloud gt_landmarks_cloud(gt_landmarks_cv, cv::viz::Color::green());
-    gt_landmarks_cloud.setRenderingProperty( cv::viz::POINT_SIZE, 1.5 );
+    gt_landmarks_cloud.setRenderingProperty( cv::viz::POINT_SIZE, 2 );
     gt_window.showWidget("gt_landmarks", gt_landmarks_cloud);
     gt_window.spin();
 
@@ -67,8 +41,12 @@ void map_visualization(string landmarks_path,  string gt_landmarks_path){
 
 int main (int argc, char** argv) {
     string dataset_path = argv[1];
+    string out_camera_positions = argv[2];
+    string out_landmark_positions = argv[3];
+    string gt_landmark_positions = argv[4];
+
     vector<Camera> cameras = load_data(dataset_path);
-    cout << "Data loaded from: " << argv[1] << endl << endl;
+    cout << "Data loaded from: " << dataset_path << endl << endl;
 
     cout << "Initialization...";
     init_translations(cameras);
@@ -82,14 +60,17 @@ int main (int argc, char** argv) {
     bundle_adjustment(cameras, landmarks);
     cout << "DONE" << endl;
 
-    save_landmarks(landmarks, argv[2]);
-    cout << endl << "Landmark positions saved in: " << argv[2] << endl;
+    save_camera_positions(cameras, out_camera_positions);
+    cout << "Camera positions saved in: " << out_camera_positions << endl;
+
+    save_landmarks(landmarks, out_landmark_positions);
+    cout << "Landmark positions saved in: " << out_landmark_positions << endl;
 
     // // Evaluation
     // eval_translations(cameras);
 
-    map_visualization(argv[2], argv[3]);
-    // load_landmarks(argv[2]);
+
+    map_visualization(out_landmark_positions, gt_landmark_positions);
 
     return 0;
 

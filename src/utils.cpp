@@ -151,4 +151,33 @@ namespace pr {
                 }
     }
 
+    void save_landmarks(const map<int, pr::Vec3f>& landmarks, string output_path){
+        ofstream file_stream(output_path);
+        for(const auto& l: landmarks) file_stream << "L: " << l.first << "\t" << l.second.transpose() << endl;
+        file_stream.close();
+    }
+
+    void save_camera_positions(const vector<Camera>& cameras, string output_path){
+        ofstream file_stream(output_path);
+        for(const auto& cam: cameras) file_stream << "C: " << cam.id << "\t" << cam.position.transpose() << endl;
+        file_stream.close();
+    }
+
+    map<int, pr::Vec3f> load_landmarks(string path){
+        map<int, pr::Vec3f> landmarks;
+
+        ifstream data_stream(path);
+        string line, line_type;
+        int id;
+        float x, y, z;
+        for(string line; getline(data_stream, line); ) {
+            istringstream line_stream(line);
+            line_stream >> line_type >> id >> x >> y >> z;
+            // cout << Vec3f(x,y,z) << endl << endl;
+            landmarks.insert({id, Vec3f(x,y,z)});
+        }
+
+        return landmarks;
+    }
+
 }

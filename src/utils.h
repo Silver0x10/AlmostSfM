@@ -2,6 +2,7 @@
 #include <cmath>
 #include <iostream>
 #include <list>
+#include <map>
 #include <fstream>
 #include <string>
 #include <vector>
@@ -57,6 +58,10 @@ namespace pr {
     }
 
     void eval_translations(const vector<Camera>& cameras);
+
+    void save_landmarks(const map<int, pr::Vec3f>& landmarks, string output_path);
+    void save_camera_positions(const vector<Camera>& cameras, string output_path);
+    map<int, pr::Vec3f> load_landmarks(string path);
 
 
 }
