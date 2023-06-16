@@ -15,17 +15,15 @@ using namespace pr;
 
 void map_visualization(string landmarks_path,  string gt_landmarks_path){
     cv::viz::Viz3d window("Map visualization");
-    cv::viz::Viz3d gt_window("GT Map visualization");
 
     // Estimated Landmarks visualization
     map<int, pr::Vec3f> landmarks = load_landmarks(landmarks_path);
     std::vector<cv::Point3d> landmarks_cv;
     for(const auto& l: landmarks) 
         landmarks_cv.push_back( cv::Point3d(l.second.x(), l.second.y(), l.second.z()) );
-    cv::viz::WCloud landmarks_cloud(landmarks_cv, cv::viz::Color::yellow());
+    cv::viz::WCloud landmarks_cloud(landmarks_cv, cv::viz::Color::red());
     landmarks_cloud.setRenderingProperty( cv::viz::POINT_SIZE, 2 );
     window.showWidget("landmarks", landmarks_cloud);
-    window.spin();
 
     // GT Landmarks visualization
     map<int, pr::Vec3f> gt_landmarks = load_landmarks(gt_landmarks_path);
@@ -34,9 +32,9 @@ void map_visualization(string landmarks_path,  string gt_landmarks_path){
         gt_landmarks_cv.push_back( cv::Point3d(l.second.x(), l.second.y(), l.second.z()) );
     cv::viz::WCloud gt_landmarks_cloud(gt_landmarks_cv, cv::viz::Color::green());
     gt_landmarks_cloud.setRenderingProperty( cv::viz::POINT_SIZE, 2 );
-    gt_window.showWidget("gt_landmarks", gt_landmarks_cloud);
-    gt_window.spin();
+    window.showWidget("gt_landmarks", gt_landmarks_cloud);
 
+    window.spin();
 }
 
 int main (int argc, char** argv) {
@@ -58,17 +56,18 @@ int main (int argc, char** argv) {
     
     cout << endl << "Bundle Adjustment... " << endl;
     bundle_adjustment(cameras, landmarks);
-    cout << "DONE" << endl;
+    cout << "DONE" << endl << endl;
 
     save_camera_positions(cameras, out_camera_positions);
     cout << "Camera positions saved in: " << out_camera_positions << endl;
 
     save_landmarks(landmarks, out_landmark_positions);
-    cout << "Landmark positions saved in: " << out_landmark_positions << endl;
+    cout << "Landmark positions saved in: " << out_landmark_positions << endl << endl;
 
-    // // Evaluation
-    // eval_translations(cameras);
-
+    // cout << "Evaluation... ";
+    // map<int, pr::Vec3f> gt_landmarks = load_landmarks(gt_landmark_positions);
+    // evaluation(cameras, landmarks, gt_landmarks);
+    // cout << "\tDONE" << endl;
 
     map_visualization(out_landmark_positions, gt_landmark_positions);
 
