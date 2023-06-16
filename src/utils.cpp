@@ -59,6 +59,16 @@ namespace pr {
         0,  s,  c;
         return R;
     }
+
+    inline Matrix3f Rx_prime(float rot_x){
+        double c=cos(rot_x);
+        double s=sin(rot_x);
+        Matrix3f R;
+        R << 1,  0, 0,
+        0,  -s,  -c,
+        0,  c,  -s;
+        return R;
+    }
     
     inline Matrix3f Ry(float rot_y){
         double c=cos(rot_y);
@@ -70,12 +80,32 @@ namespace pr {
         return R;
     }
 
+    inline Matrix3f Ry_prime(float rot_y){
+        double c=cos(rot_y);
+        double s=sin(rot_y);
+        Matrix3f R;
+        R << -s,  0,  c,
+        0 , 1,  0,
+        -c,  0, -s;
+        return R;
+    }
+
     inline Matrix3f Rz(float rot_z){
         double c=cos(rot_z);
         double s=sin(rot_z);
         Matrix3f R;
         R << c,  -s,  0,
         s,  c,  0,
+        0,  0,  1;
+        return R;
+    }
+
+    inline Matrix3f Rz_prime(float rot_z){
+        double c=cos(rot_z);
+        double s=sin(rot_z);
+        Matrix3f R;
+        R << -s,  -c,  0,
+        c,  -s,  0,
         0,  0,  1;
         return R;
     }
