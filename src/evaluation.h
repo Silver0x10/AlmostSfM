@@ -13,11 +13,11 @@ namespace pr {
 
     float eval_map(const vector<Vec3f>& landmarks);
 
-    float eval_camera_rotations(const vector<Camera>& cameras);
+    void eval_camera_rotations(const vector<Camera>& cameras, string output_dir);
 
-    float eval_camera_positions(const vector<Camera>& cameras);
+    void eval_camera_positions(const vector<Camera>& cameras, string output_dir);
 
-    void evaluation(const vector<Camera>& cameras, const map<int, Vec3f>& landmarks, const map<int, Vec3f>& gt_landmarks); 
+    void evaluation(const vector<Camera>& cameras, const map<int, Vec3f>& landmarks, const map<int, Vec3f>& gt_landmarks, string output_dir); 
 
 }
 
