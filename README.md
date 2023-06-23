@@ -13,6 +13,13 @@ Use *direction vectors* to calculate line intersection points.
 ### 2) Bundle Adjustment 
 Final refinement
 
+
+
+# **Hot to Run**
+```bash
+./build/executables/sfm dataset_and_info/dataset.txt out/cameras.txt out/landmarks.txt dataset_and_info/GT_landmarks.txt
+```
+
 ## **Final output**
 - Global position of each camera
 - Global position of each landmark
