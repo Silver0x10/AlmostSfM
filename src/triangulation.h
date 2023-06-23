@@ -4,6 +4,7 @@
 #include <map>
 #include <Eigen/Core>
 #include <Eigen/Dense>
+#include <Eigen/QR> 
 
 #include "utils.h"
 

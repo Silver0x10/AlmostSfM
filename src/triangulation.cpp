@@ -29,7 +29,7 @@ namespace pr {
         for(auto& l: landmarks) {
             Matrix3f matrix_H = matrices_H[l.first];
             Vec3f b = vectors_b[l.first];
-            l.second = matrix_H.fullPivLu().solve(b);
+            l.second = matrix_H.completeOrthogonalDecomposition().pseudoInverse() * b;
         }
 
         return landmarks;
