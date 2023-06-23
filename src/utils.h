@@ -39,6 +39,12 @@ namespace pr {
 
     void quaternion_to_RPY(float (&orientation)[3]);
 
+    Matrix3f Rx(float rot_x);
+    Matrix3f Rx_prime(float rot_x);
+    Matrix3f Ry(float rot_x);
+    Matrix3f Ry_prime(float rot_x);
+    Matrix3f Rz(float rot_x);
+    Matrix3f Rz_prime(float rot_x);
     Matrix3f v2tRPY(const Vec3f& v);
 
     vector<Camera> load_data(string dataset_path);

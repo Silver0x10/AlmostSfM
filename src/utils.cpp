@@ -50,7 +50,7 @@ namespace pr {
 
     // Implementation adapted from: https://gitlab.com/grisetti/probabilistic_robotics_2022_23/-/blob/main/source/cpp/24_projective_icp/src/defs.h
 
-    inline Matrix3f Rx(float rot_x){
+    Matrix3f Rx(float rot_x){
         double c=cos(rot_x);
         double s=sin(rot_x);
         Matrix3f R;
@@ -60,7 +60,7 @@ namespace pr {
         return R;
     }
 
-    inline Matrix3f Rx_prime(float rot_x){
+    Matrix3f Rx_prime(float rot_x){
         double c=cos(rot_x);
         double s=sin(rot_x);
         Matrix3f R;
@@ -70,7 +70,7 @@ namespace pr {
         return R;
     }
     
-    inline Matrix3f Ry(float rot_y){
+    Matrix3f Ry(float rot_y){
         double c=cos(rot_y);
         double s=sin(rot_y);
         Matrix3f R;
@@ -80,7 +80,7 @@ namespace pr {
         return R;
     }
 
-    inline Matrix3f Ry_prime(float rot_y){
+    Matrix3f Ry_prime(float rot_y){
         double c=cos(rot_y);
         double s=sin(rot_y);
         Matrix3f R;
@@ -90,7 +90,7 @@ namespace pr {
         return R;
     }
 
-    inline Matrix3f Rz(float rot_z){
+    Matrix3f Rz(float rot_z){
         double c=cos(rot_z);
         double s=sin(rot_z);
         Matrix3f R;
@@ -100,7 +100,7 @@ namespace pr {
         return R;
     }
 
-    inline Matrix3f Rz_prime(float rot_z){
+    Matrix3f Rz_prime(float rot_z){
         double c=cos(rot_z);
         double s=sin(rot_z);
         Matrix3f R;
