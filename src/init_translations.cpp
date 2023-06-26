@@ -5,7 +5,7 @@
 namespace pr {
 
     void error_and_jacobian_translation(const Vec3f& t_ij, const Matrix3f& rot_i, const Vec3f& t_i, const Vec3f& t_j, Vec3f& error, Eigen::MatrixXf& jacobians) {
-        error = skew(t_ij) * rot_i.transpose() * (t_i - t_j);
+        error = skew(t_ij) * rot_i.transpose() * (t_j - t_i);
 
         Matrix3f jac_t_i = skew(t_ij) * rot_i.transpose();
         Matrix3f jac_t_j = -jac_t_i;
@@ -23,6 +23,7 @@ namespace pr {
 
 
     void init_translations(vector<Camera>& cameras) {
+        cameras[0].position.setZero();
         int system_size = cameras.size() - 1;
 
         Vec3f state[system_size];
@@ -34,6 +35,7 @@ namespace pr {
             for(int j=0; j<(int)(cameras.size()); ++j){
                 if(i == 0 and j == 0) continue;
 
+                // const auto& t_ij = v2tRPY(cameras[i].gt_orientation).transpose()*(cameras[j].gt_position - cameras[i].gt_position); // GT for checking correctness
                 const auto& t_ij = calculate_relative_position(cameras[i], cameras[j]);
                 const auto& rot_i = v2tRPY(cameras[i].orientation);
                 const auto& t_i = (i!=0) ? state[i - 1] : t_0;
