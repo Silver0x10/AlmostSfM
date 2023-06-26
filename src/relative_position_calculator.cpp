@@ -68,11 +68,13 @@ namespace pr {
         matrixW << 0, 1, 0,
                   -1, 0, 0,
                    0, 0, 1;
+
+        // TODO: Consider all solutions for t, -t, W, W^T (?)
+
         // Matrix3f matrixR = essential_matrix.u * matrixW * essential_matrix.vt;
         Vec3f t_ij = skew2v(essential_matrix.vt.transpose() * essential_matrix.s * matrixW.transpose() * essential_matrix.vt);
         return t_ij;
     }
 
-    
 }
 
