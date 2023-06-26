@@ -26,6 +26,7 @@ void visualize(const vector<Camera>& cameras, string landmarks_path,  string gt_
     landmarks_cloud.setRenderingProperty( cv::viz::POINT_SIZE, 3 );
     window.showWidget("landmarks", landmarks_cloud);
 
+    // Estimated Cameras visualization
     std::vector<cv::Point3d> cameras_cv;
     for(const auto& c: cameras) 
         cameras_cv.push_back( cv::Point3d( c.position.x(), c.position.y(), c.position.z()) );
@@ -55,10 +56,11 @@ void visualize(const vector<Camera>& cameras, string landmarks_path,  string gt_
 
 int main (int argc, char** argv) {
     string dataset_path = argv[1];
-    string out_camera_positions = argv[2];
-    string out_landmark_positions = argv[3];
-    string gt_landmark_positions = argv[4];
-    string output_dir = out_landmark_positions.substr(0, out_camera_positions.rfind('/'));
+    string gt_landmark_positions = argv[2];
+    string output_dir = argv[3]; // out_landmark_positions.substr(0, out_camera_positions.rfind('/'));
+    int ba_rounds = stoi(argv[4]);
+    string out_camera_positions = output_dir + "/cameras.txt";
+    string out_landmark_positions = output_dir + "/landmarks.txt";
 
     vector<Camera> cameras = load_data(dataset_path);
     cout << "Data loaded from: " << dataset_path << endl << endl;
@@ -72,7 +74,7 @@ int main (int argc, char** argv) {
     cout << "\tDONE" << endl;
     
     cout << endl << "Bundle Adjustment... " << endl;
-    // bundle_adjustment(cameras, landmarks);
+    bundle_adjustment(cameras, landmarks, ba_rounds);
     cout << "DONE" << endl << endl;
 
     save_camera_positions(cameras, out_camera_positions);
