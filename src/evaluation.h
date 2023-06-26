@@ -9,9 +9,9 @@
 
 namespace pr {
 
-    float rmse(const vector<Vec3f>& landmarks);
+    float rmse(const map<int, Vec3f>& landmarks, const map<int, Vec3f>& gt_landmarks);
 
-    float eval_map(const vector<Vec3f>& landmarks);
+    void eval_map(const map<int, Vec3f>& landmarks, const map<int, Vec3f>& gt_landmarks, string output_dir);
 
     void eval_camera_rotations(const vector<Camera>& cameras, string output_dir);
 

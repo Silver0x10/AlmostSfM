@@ -85,9 +85,9 @@ int main (int argc, char** argv) {
 
     map<int, pr::Vec3f> gt_landmarks = load_landmarks(gt_landmark_positions);
 
-    cout << "Evaluation... ";
+    cout << "Evaluation... " << endl;
     evaluation(cameras, landmarks, gt_landmarks, output_dir);
-    cout << "\tDONE" << endl;
+    cout << "DONE" << endl;
 
     visualize(cameras, out_landmark_positions, gt_landmark_positions);
 

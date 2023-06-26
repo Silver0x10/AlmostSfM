@@ -2,14 +2,29 @@
 
 namespace pr {
 
-    float rmse(const vector<Vec3f>& landmarks) {
-        float error;
+    float rmse(const map<int, Vec3f>& landmarks, const map<int, Vec3f>& gt_landmarks) {
+        float total_squared_error = 0.;
 
-        return error;
+        vector<int> ids; 
+        for(const auto& l: landmarks) ids.push_back(l.first);
+        
+        for(int i: ids) {
+            Vec3f delta_i = gt_landmarks.at(i) - landmarks.at(i);
+            total_squared_error += (delta_i.transpose() * delta_i).value();
+        }
+        return sqrt(total_squared_error / ids.size());
     }
 
-    float eval_map(const vector<Vec3f>& landmarks) {
-        return 0;
+    void eval_map(const map<int, Vec3f>& landmarks, const map<int, Vec3f>& gt_landmarks, string output_dir) {
+        ofstream file_stream(output_dir.append("/landmarks_errors.txt"));
+        
+        float error = rmse(landmarks, gt_landmarks);
+        file_stream << "RMSE\t" << error << endl;
+        cout << "rmsq: " << error << endl;
+
+        // TODO: Sim(3) ICP
+
+        file_stream.close();
     }
 
     /*
@@ -57,6 +72,7 @@ namespace pr {
     void evaluation(const vector<Camera>& cameras, const map<int, Vec3f>& landmarks, const map<int, Vec3f>& gt_landmarks, string output_dir) {
         eval_camera_rotations(cameras, output_dir);
         eval_camera_positions(cameras, output_dir);
+        eval_map(landmarks, gt_landmarks, output_dir);
     }
 
 
