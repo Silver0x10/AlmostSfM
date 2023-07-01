@@ -15,14 +15,14 @@ namespace pr {
         return sqrt(total_squared_error / ids.size());
     }
 
-    void eval_map(const map<int, Vec3f>& landmarks, const map<int, Vec3f>& gt_landmarks, string output_dir) {
+    void eval_map(const map<int, Vec3f>& landmarks, const map<int, Vec3f>& gt_landmarks, const Sim3& transform, string output_dir) {
         ofstream file_stream(output_dir.append("/landmarks_errors.txt"));
         
         float error = rmse(landmarks, gt_landmarks);
         file_stream << "RMSE\t" << error << endl;
         cout << "rmsq: " << error << endl;
 
-        // TODO: Sim(3) ICP
+        // ToDo: file_stream << endl << "Sim(3):\n" << sim3.affine() << endl;
 
         file_stream.close();
     }
@@ -69,10 +69,10 @@ namespace pr {
         file_stream.close();
     }
 
-    void evaluation(const vector<Camera>& cameras, const map<int, Vec3f>& landmarks, const map<int, Vec3f>& gt_landmarks, string output_dir) {
+    void evaluation(const vector<Camera>& cameras, const map<int, Vec3f>& landmarks, const map<int, Vec3f>& gt_landmarks, const Sim3& transform, string output_dir) {
         eval_camera_rotations(cameras, output_dir);
         eval_camera_positions(cameras, output_dir);
-        eval_map(landmarks, gt_landmarks, output_dir);
+        eval_map(landmarks, gt_landmarks, transform, output_dir);
     }
 
 

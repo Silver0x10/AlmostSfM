@@ -6,6 +6,7 @@ add_executable(sfm structure_from_motion.cpp
     ../src/triangulation.cpp
     ../src/bundle_adjustment.cpp
     ../src/evaluation.cpp
+    ../src/icp_3d.cpp
 )
 target_link_libraries(sfm ${OpenCV_LIBS})
 

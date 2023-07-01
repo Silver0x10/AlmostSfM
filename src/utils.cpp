@@ -188,4 +188,28 @@ namespace pr {
         return landmarks;
     }
 
+    Sim3::Sim3() {
+        this->scale = 1;
+        this->rotation.setZero();
+        this->translation.setZero();
+    }
+
+    Sim3::Sim3(float scale, Vec3f rotation, Vec3f translation) {
+        this->scale = scale;
+        this->rotation = rotation;
+        this->translation = translation;
+    }
+
+    Vec3f Sim3::operator*(Vec3f v) {
+        return v2tRPY(this->rotation) * ( this->scale * v ) + this->translation;
+    }
+
+    void Sim3::perturb(Vec3f translation, float scale, Vec3f rotation) {
+        this->translation += translation;
+        this->scale += scale;
+
+        this->rotation += rotation;
+        for(int i=0; i<3; i++) this->rotation[i] = atan2( sin(this->rotation[i]), cos(this->rotation[i]) );
+    }
+
 }

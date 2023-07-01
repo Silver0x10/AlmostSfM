@@ -18,7 +18,7 @@ Final refinement
 # **Hot to Run**
 From the *build* directory:
 ```bash
- ./executables/sfm ../dataset_and_info/dataset.txt ../dataset_and_info/GT_landmarks.txt ../out  3
+ ./executables/sfm ../dataset_and_info/dataset.txt ../dataset_and_info/GT_landmarks.txt ../out  0
 ```
 The arguments are (in order):
 1) Dataset path

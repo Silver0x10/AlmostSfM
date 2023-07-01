@@ -1,5 +1,6 @@
 #pragma once
-#include <cmath>
+// #include <cmath>
+#include <math.h> 
 #include <iostream>
 #include <list>
 #include <map>
@@ -37,6 +38,23 @@ namespace pr {
         Camera(int id, float gt_position[3], float gt_orientation[3], float position[3], float orientation[3]);
     };
 
+    class Sim3 {
+        // private:
+        //     /* data */
+        public:
+            float scale;
+            Vec3f rotation; 
+            Vec3f translation; 
+
+            Sim3();
+
+            Sim3(float scale, Vec3f rotation, Vec3f translation);
+
+            Vec3f operator*(Vec3f v);
+
+            void perturb(Vec3f translation, float scale, Vec3f rotation);
+    };
+    
     void quaternion_to_RPY(float (&orientation)[3]);
 
     Matrix3f Rx(float rot_x);

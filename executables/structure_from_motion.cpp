@@ -10,6 +10,7 @@
 #include "triangulation.h"
 #include "bundle_adjustment.h"
 #include "evaluation.h"
+#include "icp_3d.h"
 
 using namespace std;
 using namespace pr;
@@ -23,7 +24,7 @@ void visualize(const vector<Camera>& cameras, string landmarks_path,  string gt_
     for(const auto& l: landmarks) 
         landmarks_cv.push_back( cv::Point3d(l.second.x(), l.second.y(), l.second.z()) );
     cv::viz::WCloud landmarks_cloud(landmarks_cv, cv::viz::Color::red());
-    landmarks_cloud.setRenderingProperty( cv::viz::POINT_SIZE, 3 );
+    landmarks_cloud.setRenderingProperty( cv::viz::POINT_SIZE, 5 );
     window.showWidget("landmarks", landmarks_cloud);
 
     // Estimated Cameras visualization
@@ -31,7 +32,7 @@ void visualize(const vector<Camera>& cameras, string landmarks_path,  string gt_
     for(const auto& c: cameras) 
         cameras_cv.push_back( cv::Point3d( c.position.x(), c.position.y(), c.position.z()) );
     cv::viz::WCloud cameras_cloud(cameras_cv, cv::viz::Color::blue());
-    cameras_cloud.setRenderingProperty( cv::viz::POINT_SIZE, 3 );
+    cameras_cloud.setRenderingProperty( cv::viz::POINT_SIZE, 5 );
     window.showWidget("cameras", cameras_cloud);
 
     // GT Landmarks visualization
@@ -85,8 +86,15 @@ int main (int argc, char** argv) {
 
     map<int, pr::Vec3f> gt_landmarks = load_landmarks(gt_landmark_positions);
 
+    Sim3 transform = icp_3d(landmarks, gt_landmarks);
+    // for(auto& l: landmarks) {
+    //     cout << l.second.transpose() << "\t|||\t";
+        // l.second = transform * l.second;
+        // cout << l.second.transpose() << endl<< endl;
+    // }
+
     cout << "Evaluation... " << endl;
-    evaluation(cameras, landmarks, gt_landmarks, output_dir);
+    evaluation(cameras, landmarks, gt_landmarks, transform, output_dir);
     cout << "DONE" << endl;
 
     visualize(cameras, out_landmark_positions, gt_landmark_positions);
