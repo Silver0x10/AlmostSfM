@@ -152,9 +152,10 @@ namespace pr {
                 // cout << i << " " << i + cameras.size()-1 << " " << cameras.size()-1 << " " << dx_i_orientation.transpose() << endl;
                 cameras[i].orientation += dx_i_orientation;
                 for(int j=0; j<3; j++) { // wrap each orientation angle to [-pi; pi)
-                    float wrapped_angle = cameras[i].orientation[j];
-                    wrapped_angle = (sin(wrapped_angle), cos(wrapped_angle));
-                    cameras[i].orientation[j] = wrapped_angle;
+                    // float wrapped_angle = cameras[i].orientation[j];
+                    // wrapped_angle = (sin(wrapped_angle), cos(wrapped_angle));
+                    // cameras[i].orientation[j] = wrapped_angle;
+                    cameras[i].orientation[j] = atan2(sin(cameras[i].orientation[j]), cos(cameras[i].orientation[j]));
                 }
             }
             for(int j=2*cameras.size(); j < system_size; j++) {
