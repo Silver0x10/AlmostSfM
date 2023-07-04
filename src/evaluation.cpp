@@ -22,7 +22,10 @@ namespace pr {
         file_stream << "RMSE\t" << error << endl;
         cout << "rmsq: " << error << endl;
 
-        // ToDo: file_stream << endl << "Sim(3):\n" << sim3.affine() << endl;
+        file_stream << endl << "Sim(3):" << endl;
+        file_stream << "\ttranslation:\t" << transform.translation.transpose() << endl;
+        file_stream << "\tscale:\t" << transform.scale << endl;
+        file_stream << "\trotation angles:\t" << transform.rotation.transpose() << endl;
 
         file_stream.close();
     }
