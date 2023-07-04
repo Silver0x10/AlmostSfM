@@ -210,15 +210,16 @@ namespace pr {
     }
 
     Vec3f Sim3::operator*(Vec3f v) {
-        return v2tRPY(this->rotation) * ( this->scale * v ) + this->translation;
+        return this->scale * (v2tRPY(this->rotation) * v + this->translation);
     }
 
-    void Sim3::perturb(Vec3f translation, float scale, Vec3f rotation) {
-        this->translation += translation;
-        this->scale += scale;
+    void Sim3::perturb(Vec3f d_translation, float d_scale, Vec3f d_rotation) {
+        // this->translation = v2tRPY(d_rotation)*this->translation + d_translation*this->scale;
+        this->translation += d_translation;
 
-        this->rotation += rotation;
-        for(int i=0; i<3; i++) this->rotation[i] = atan2( sin(this->rotation[i]), cos(this->rotation[i]) );
+        this->scale *= exp(d_scale);
+
+        this->rotation = tRPY2v( v2tRPY(d_rotation) * v2tRPY(this->rotation) );
     }
 
 }
