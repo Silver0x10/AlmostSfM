@@ -2,6 +2,8 @@
 
 namespace pr {
 
+    // Lesson 23b_registration_on_a_manifold taken as reference
+
     void error_and_jacobian_icp_3d(Sim3 state, Vec3f landmark, Vec3f gt_landmark, Vec3f& error, Eigen::MatrixXf& jacobians) {
         error = (state * landmark) - gt_landmark;
 
