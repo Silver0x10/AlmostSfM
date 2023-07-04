@@ -3,19 +3,24 @@
 namespace pr {
 
     void error_and_jacobian_icp_3d(Sim3 state, Vec3f landmark, Vec3f gt_landmark, Vec3f& error, Eigen::MatrixXf& jacobians) {
-        error = state * landmark - gt_landmark;
+        error = (state * landmark) - gt_landmark;
 
-        jacobians.block<3,3>(0, 0).setIdentity(); // wrt the translation components
+        // wrt the translation components:
+        jacobians.block<3,3>(0, 0).setIdentity(); 
 
-        jacobians.block<3,1>(0, 3) = v2tRPY(state.rotation) * landmark; // wrt the scaling component
+        // wrt the scaling component:
+        jacobians.block<3,1>(0, 3) = (state * landmark); 
+        // jacobians.block<3,1>(0, 3) = v2tRPY(state.rotation) * landmark; // wrt the scaling component
 
-        jacobians.block<3,1>(0, 4) = Rx_prime(state.rotation[0])*Ry(state.rotation[1])*Rz(state.rotation[2]) * landmark; // wrt the camera orientation wrt x
-        jacobians.block<3,1>(0, 5) = Rx(state.rotation[0])*Ry_prime(state.rotation[1])*Rz(state.rotation[2]) * landmark; // wrt the camera orientation wrt y
-        jacobians.block<3,1>(0, 6) = Rx(state.rotation[0])*Ry(state.rotation[1])*Rz_prime(state.rotation[2]) * landmark; // wrt the camera orientation wrt z
+        // wrt the camera orientation:
+        jacobians.block<3,3>(0, 4) = skew(-(state * landmark));
+        // jacobians.block<3,1>(0, 4) = Rx_prime(state.rotation[0])*Ry(state.rotation[1])*Rz(state.rotation[2]) * landmark; // wrt the camera orientation wrt x
+        // jacobians.block<3,1>(0, 5) = Rx(state.rotation[0])*Ry_prime(state.rotation[1])*Rz(state.rotation[2]) * landmark; // wrt the camera orientation wrt y
+        // jacobians.block<3,1>(0, 6) = Rx(state.rotation[0])*Ry(state.rotation[1])*Rz_prime(state.rotation[2]) * landmark; // wrt the camera orientation wrt z
     }
 
     Sim3 icp_3d(map<int, Vec3f>& landmarks, map<int, Vec3f> gt_landmarks) {
-        Sim3 state;
+        Sim3 state = Sim3();
 
         Eigen::MatrixXf matrix_H(7, 7);
         Eigen::MatrixXf b(7, 1);
@@ -49,11 +54,6 @@ namespace pr {
             Vec3f translation = dx.block<3,1>(0, 0);
             float scale = dx(3, 0);
             Vec3f rotation = dx.block<3,1>(4,0);
-
-            // cout << "dx: " << dx.transpose() << endl;
-            cout << endl << "tr: " << translation.transpose() << endl;
-            cout << "s: " << scale << endl;
-            cout << "rot: " << rotation.transpose() << endl<<endl;
 
             state.perturb(translation, scale, rotation);
         }
