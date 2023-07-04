@@ -117,6 +117,15 @@ namespace pr {
 
     // ------ end adapted implementation ------ 
 
+    Vec3f tRPY2v(const Matrix3f& rot) {
+        float beta = atan2( -rot(2,0), sqrt(pow(rot(2,1), 2) + pow(rot(2,2), 2)) );
+        float alpha = atan2( rot(2,1)/cos(beta) , rot(2,2)/cos(beta) );
+        float gamma = atan2( rot(1,0)/cos(beta) , rot(0,0)/cos(beta) );
+        Vec3f v;
+        v << alpha, beta, gamma;
+        return v;
+    }
+
     vector<Camera> load_data(string dataset_path) {
         vector<Camera> cameras;
         

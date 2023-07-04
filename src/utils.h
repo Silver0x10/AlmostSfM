@@ -64,6 +64,7 @@ namespace pr {
     Matrix3f Rz(float rot_x);
     Matrix3f Rz_prime(float rot_x);
     Matrix3f v2tRPY(const Vec3f& v);
+    Vec3f tRPY2v(const Matrix3f& rot);
 
     vector<Camera> load_data(string dataset_path);
 
