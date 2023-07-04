@@ -66,9 +66,9 @@ int main (int argc, char** argv) {
     vector<Camera> cameras = load_data(dataset_path);
     cout << "Data loaded from: " << dataset_path << endl << endl;
 
-    // cout << "Initialization...";
-    // init_translations(cameras);
-    // cout << "\tDONE" << endl;
+    cout << "Initialization...";
+    init_translations(cameras);
+    cout << "\tDONE" << endl;
     
     cout << "Triangulation... ";
     auto landmarks = triangulate(cameras);
@@ -78,20 +78,17 @@ int main (int argc, char** argv) {
     bundle_adjustment(cameras, landmarks, ba_rounds);
     cout << "DONE" << endl << endl;
 
-    save_camera_positions(cameras, out_camera_positions);
-    cout << "Camera positions saved in: " << out_camera_positions << endl;
-
-    save_landmarks(landmarks, out_landmark_positions);
-    cout << "Landmark positions saved in: " << out_landmark_positions << endl << endl;
-
     map<int, pr::Vec3f> gt_landmarks = load_landmarks(gt_landmark_positions);
 
     Sim3 transform = icp_3d(landmarks, gt_landmarks);
-    // for(auto& l: landmarks) {
-    //     cout << l.second.transpose() << "\t|||\t";
-        // l.second = transform * l.second;
-        // cout << l.second.transpose() << endl<< endl;
-    // }
+    for(auto& l: landmarks) l.second = transform * l.second;
+    for(auto& c: cameras) c.position = transform * c.position;
+    
+    // Save cameras and landmarks data
+    save_camera_positions(cameras, out_camera_positions);
+    cout << "Camera positions saved in: " << out_camera_positions << endl;
+    save_landmarks(landmarks, out_landmark_positions);
+    cout << "Landmark positions saved in: " << out_landmark_positions << endl << endl;
 
     cout << "Evaluation... " << endl;
     evaluation(cameras, landmarks, gt_landmarks, transform, output_dir);
