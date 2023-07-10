@@ -60,8 +60,6 @@ namespace pr {
         Eigen::BDCSVD<Eigen::MatrixXf> svd_H(matrix_H, Eigen::ComputeFullV);       
         auto t_initialized = svd_H.matrixV().rightCols(1);
 
-        // TODO: +t / -t disambiguation (?)
-        
         for(int i=1; i < (int)cameras.size(); i++){
             cameras[i].position = t_initialized.block<3,1>(3*(i-1), 0);
             // cout << cameras[i].position << "\n\n";

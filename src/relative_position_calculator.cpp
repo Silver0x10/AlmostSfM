@@ -1,8 +1,6 @@
-// #pragma once
+
 #include "relative_position_calculator.h"
-// #include <iostream>
-// #include <opencv2/core.hpp>
-// #include <opencv2/calib3d.hpp>
+
 namespace pr {
 
     Essential_Matrix eight_point_algorithm(vector<cv::Vec3f>& dir_vectors_i, vector<cv::Vec3f>& dir_vectors_j){
@@ -43,6 +41,61 @@ namespace pr {
         return structE;
     }
 
+
+    int count_admissible_points(const Vec3f& t, const Matrix3f& matrixR, const map<int, Vec3f>& landmarks) {
+        int admissible_points = 0;
+        
+        auto r3 = matrixR.row(2); // third row of the rotation matrix. used to check if the projection of the landmark along the camera z-axis is positive
+        for(auto& l: landmarks) {
+            bool in_front_of_the_camera =  ( r3 * (l.second - t) ) > 0;
+            if(in_front_of_the_camera) ++admissible_points;
+        }
+
+        return admissible_points;
+    }
+
+
+    Vec3f extract_t(const Camera& cam_i, const Camera& cam_j, const Essential_Matrix& e) {
+        Matrix3f matrixW;
+        matrixW << 0, 1, 0,
+                  -1, 0, 0,
+                   0, 0, 1;
+
+        vector<Matrix3f> solutions_for_R;
+        Matrix3f matrixR = e.u * matrixW * e.vt; 
+        solutions_for_R.push_back(matrixR);
+        Matrix3f matrixR_transpose = matrixR.transpose(); 
+        solutions_for_R.push_back(matrixR_transpose);
+        
+        vector<Vec3f> solutions_for_t;
+        Vec3f t = skew2v(e.vt.transpose() * e.s * matrixW.transpose() * e.vt); 
+        solutions_for_t.push_back(t);
+        Vec3f t_minus = -t; 
+        solutions_for_t.push_back(t_minus);
+        
+        map<int, Vec3f> landmarks = triangulate(cam_i, cam_j);
+
+        Vec3f t_final;
+        Matrix3f matrixR_final;
+        int max_admissible_points = 0;
+        for(const Vec3f& sol_t: solutions_for_t) {
+            for(const Matrix3f& sol_R: solutions_for_R) {
+                int admissible_points = count_admissible_points(sol_t, sol_R, landmarks);
+                // cout << admissible_points << "\t";
+                if( admissible_points > max_admissible_points ) {
+                    // cout << "<-better\t";
+                    max_admissible_points = admissible_points;
+                    t_final = sol_t;
+                    matrixR_final = sol_R;
+                }
+            }
+        }
+        // cout << endl;
+        
+        return t_final;
+    }
+
+
     Vec3f calculate_relative_position(const Camera& cam_i, const Camera& cam_j){
         vector<cv::Vec3f> correspondences_i;
         vector<cv::Vec3f> correspondences_j;
@@ -64,15 +117,8 @@ namespace pr {
 
         auto essential_matrix = eight_point_algorithm(correspondences_i, correspondences_j);
     
-        Matrix3f matrixW;
-        matrixW << 0, 1, 0,
-                  -1, 0, 0,
-                   0, 0, 1;
-
-        // TODO: Consider all solutions for t, -t, W, W^T (?)
-
-        // Matrix3f matrixR = essential_matrix.u * matrixW * essential_matrix.vt;
-        Vec3f t_ij = skew2v(essential_matrix.vt.transpose() * essential_matrix.s * matrixW.transpose() * essential_matrix.vt);
+        auto t_ij = extract_t(cam_i, cam_j, essential_matrix);
+                
         return t_ij;
     }
 
