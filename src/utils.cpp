@@ -213,7 +213,7 @@ namespace pr {
         return this->scale * (v2tRPY(this->rotation) * v + this->translation);
     }
 
-    void Sim3::perturb(Vec3f d_translation, float d_scale, Vec3f d_rotation) {
+    void Sim3::box_plus(Vec3f d_translation, float d_scale, Vec3f d_rotation) {
         // this->translation = v2tRPY(d_rotation)*this->translation + d_translation*this->scale;
         this->translation += d_translation;
 

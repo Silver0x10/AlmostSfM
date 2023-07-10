@@ -57,7 +57,7 @@ namespace pr {
             float scale = dx(3, 0);
             Vec3f rotation = dx.block<3,1>(4,0);
 
-            state.perturb(translation, scale, rotation);
+            state.box_plus(translation, scale, rotation);
         }
 
         return state;

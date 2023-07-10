@@ -52,7 +52,7 @@ namespace pr {
 
             Vec3f operator*(Vec3f v);
 
-            void perturb(Vec3f translation, float scale, Vec3f rotation);
+            void box_plus(Vec3f translation, float scale, Vec3f rotation);
     };
     
     void quaternion_to_RPY(float (&orientation)[3]);
