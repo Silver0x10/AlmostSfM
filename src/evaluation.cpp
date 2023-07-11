@@ -22,7 +22,7 @@ namespace pr {
         
         float error = rmse(landmarks, gt_landmarks);
         file_stream << "RMSE\t" << error << endl;
-        cout << endl << "landmarks RMSE: " << error << endl;
+        cout << "Landmarks RMSE: " << error << endl;
 
         file_stream << endl << "Sim(3):" << endl;
         file_stream << "\ttranslation:\t" << transform.translation.transpose() << endl;

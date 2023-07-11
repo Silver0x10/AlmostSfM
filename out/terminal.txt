@@ -1,17 +1,16 @@
-Output of "./executables/sfm ../dataset_and_info/dataset.txt ../dataset_and_info/GT_landmarks.txt ../out  5"
-
 Data loaded from: ../dataset_and_info/dataset.txt
 
-Initialization...	DONE
-Triangulation... 	DONE
+0) Initialization...	DONE
+1) Triangulation... 	DONE
 
-Bundle Adjustment... 
+2) Bundle Adjustment... 
 BA iteration: 0
 chi_tot error: 43.6566
 BA iteration: 1
 chi_tot error: 2.65242e-05
 DONE
 
+3) Landmarks Registration... 
 ICP 3D iteration: 0
 chi_tot error: 3963.64
 ICP 3D iteration: 1
@@ -22,10 +21,11 @@ ICP 3D iteration: 3
 chi_tot error: 3941.56
 ICP 3D iteration: 4
 chi_tot error: 3941.56
+DONE
+
 Camera positions saved in: ../out/cameras.txt
 Landmark positions saved in: ../out/landmarks.txt
 
-Evaluation... 
-
-landmarks RMSE: 6.76994
+4) Evaluation... 
+Landmarks RMSE: 6.76994
 DONE

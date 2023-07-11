@@ -28,8 +28,10 @@ void visualize(const vector<Camera>& cameras, const map<int, pr::Vec3f>& landmar
 
     // Estimated Cameras visualization (BLUE)
     std::vector<cv::Point3d> cameras_cv;
-    for(const auto& c: cameras) 
+    for(const auto& c: cameras) {
+        // if(c.id == 0) continue;
         cameras_cv.push_back( cv::Point3d( c.position.x(), c.position.y(), c.position.z()) );
+    }
     cv::viz::WCloud cameras_cloud(cameras_cv, cv::viz::Color::blue());
     cameras_cloud.setRenderingProperty( cv::viz::POINT_SIZE, 5 );
     window.showWidget("cameras", cameras_cloud);
@@ -64,23 +66,25 @@ int main (int argc, char** argv) {
     vector<Camera> cameras = load_data(dataset_path);
     cout << "Data loaded from: " << dataset_path << endl << endl;
 
-    cout << "Initialization...";
+    cout << "0) Initialization...";
     init_translations(cameras);
     cout << "\tDONE" << endl;
     
-    cout << "Triangulation... ";
+    cout << "1) Triangulation... ";
     auto landmarks = triangulate(cameras);
     cout << "\tDONE" << endl;
     
-    cout << endl << "Bundle Adjustment... " << endl;
+    cout << endl << "2) Bundle Adjustment... " << endl;
     bundle_adjustment(cameras, landmarks, ba_rounds);
-    cout << "DONE" << endl << endl;
+    cout << "DONE" << endl;
 
     map<int, pr::Vec3f> gt_landmarks = load_landmarks(gt_landmark_positions);
 
+    cout << endl << "3) Landmarks Registration... " << endl;
     Sim3 transform = icp_3d(landmarks, gt_landmarks);
     // for(auto& l: landmarks) l.second = (transform * l.second);
     // for(auto& c: cameras) c.position = transform * c.position;
+    cout << "DONE" << endl << endl;
 
     // Save cameras and landmarks data
     save_camera_positions(cameras, out_camera_positions);
@@ -88,7 +92,7 @@ int main (int argc, char** argv) {
     save_landmarks(landmarks, out_landmark_positions);
     cout << "Landmark positions saved in: " << out_landmark_positions << endl << endl;
 
-    cout << "Evaluation... " << endl;
+    cout << "4) Evaluation... " << endl;
     evaluation(cameras, landmarks, gt_landmarks, transform, output_dir);
     cout << "DONE" << endl;
 
