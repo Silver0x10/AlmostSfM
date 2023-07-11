@@ -26,5 +26,6 @@ Camera positions saved in: ../out/cameras.txt
 Landmark positions saved in: ../out/landmarks.txt
 
 Evaluation... 
-rmsq: 6.76994
+
+landmarks RMSE: 6.76994
 DONE
