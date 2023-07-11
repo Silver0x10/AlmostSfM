@@ -15,11 +15,10 @@
 using namespace std;
 using namespace pr;
 
-void visualize(const vector<Camera>& cameras, string landmarks_path,  string gt_landmarks_path){
+void visualize(const vector<Camera>& cameras, const map<int, pr::Vec3f>& landmarks, const map<int, pr::Vec3f>& gt_landmarks){
     cv::viz::Viz3d window("Map visualization");
 
-    // Estimated Landmarks visualization
-    map<int, pr::Vec3f> landmarks = load_landmarks(landmarks_path);
+    // Estimated Landmarks visualization (RED)
     std::vector<cv::Point3d> landmarks_cv;
     for(const auto& l: landmarks) 
         landmarks_cv.push_back( cv::Point3d(l.second.x(), l.second.y(), l.second.z()) );
@@ -27,7 +26,7 @@ void visualize(const vector<Camera>& cameras, string landmarks_path,  string gt_
     landmarks_cloud.setRenderingProperty( cv::viz::POINT_SIZE, 5 );
     window.showWidget("landmarks", landmarks_cloud);
 
-    // Estimated Cameras visualization
+    // Estimated Cameras visualization (BLUE)
     std::vector<cv::Point3d> cameras_cv;
     for(const auto& c: cameras) 
         cameras_cv.push_back( cv::Point3d( c.position.x(), c.position.y(), c.position.z()) );
@@ -35,8 +34,7 @@ void visualize(const vector<Camera>& cameras, string landmarks_path,  string gt_
     cameras_cloud.setRenderingProperty( cv::viz::POINT_SIZE, 5 );
     window.showWidget("cameras", cameras_cloud);
 
-    // GT Landmarks visualization
-    map<int, pr::Vec3f> gt_landmarks = load_landmarks(gt_landmarks_path);
+    // GT Landmarks visualization (GREEN)
     std::vector<cv::Point3d> gt_landmarks_cv;
     for(const auto& l: gt_landmarks) 
         gt_landmarks_cv.push_back( cv::Point3d(l.second.x(), l.second.y(), l.second.z()) );
@@ -44,7 +42,7 @@ void visualize(const vector<Camera>& cameras, string landmarks_path,  string gt_
     gt_landmarks_cloud.setRenderingProperty( cv::viz::POINT_SIZE, 3 );
     window.showWidget("gt_landmarks", gt_landmarks_cloud);
 
-    // GT Cameras visualization
+    // GT Cameras visualization (VIOLET)
     std::vector<cv::Point3d> gt_cameras_cv;
     for(const auto& c: cameras) 
         gt_cameras_cv.push_back( cv::Point3d( c.gt_position.x(), c.gt_position.y(), c.gt_position.z()) );
@@ -81,9 +79,9 @@ int main (int argc, char** argv) {
     map<int, pr::Vec3f> gt_landmarks = load_landmarks(gt_landmark_positions);
 
     Sim3 transform = icp_3d(landmarks, gt_landmarks);
-    for(auto& l: landmarks) l.second = transform * l.second;
-    for(auto& c: cameras) c.position = transform * c.position;
-    
+    // for(auto& l: landmarks) l.second = (transform * l.second);
+    // for(auto& c: cameras) c.position = transform * c.position;
+
     // Save cameras and landmarks data
     save_camera_positions(cameras, out_camera_positions);
     cout << "Camera positions saved in: " << out_camera_positions << endl;
@@ -94,7 +92,7 @@ int main (int argc, char** argv) {
     evaluation(cameras, landmarks, gt_landmarks, transform, output_dir);
     cout << "DONE" << endl;
 
-    visualize(cameras, out_landmark_positions, gt_landmark_positions);
+    visualize(cameras, landmarks, gt_landmarks);
 
     return 0;
 
