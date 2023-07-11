@@ -53,11 +53,11 @@ namespace pr {
             dx.setZero();
             dx = matrix_H.fullPivLu().solve(-b);
 
-            Vec3f translation = dx.block<3,1>(0, 0);
-            float scale = dx(3, 0);
-            Vec3f rotation = dx.block<3,1>(4,0);
+            Vec3f d_translation = dx.block<3,1>(0, 0);
+            float d_scale = dx(3, 0);
+            Vec3f d_rotation = dx.block<3,1>(4,0);
 
-            state.box_plus(translation, scale, rotation);
+            state.box_plus(d_translation, d_scale, d_rotation);
         }
 
         return state;

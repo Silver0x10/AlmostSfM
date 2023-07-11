@@ -214,8 +214,7 @@ namespace pr {
     }
 
     void Sim3::box_plus(Vec3f d_translation, float d_scale, Vec3f d_rotation) {
-        // this->translation = v2tRPY(d_rotation)*this->translation + d_translation*this->scale;
-        this->translation += d_translation;
+        this->translation = v2tRPY(d_rotation)*this->translation + d_translation*this->scale;
 
         this->scale *= exp(d_scale);
 
