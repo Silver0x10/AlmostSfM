@@ -10,7 +10,6 @@ namespace pr {
         
         for(int i: ids) {
             Vec3f delta_i = gt_landmarks.at(i) - landmarks.at(i);
-            cout << delta_i.transpose() << endl;
             total_squared_error += (delta_i.transpose() * delta_i).value();
         }
         return sqrt(total_squared_error / ids.size());
@@ -23,7 +22,7 @@ namespace pr {
         
         float error = rmse(landmarks, gt_landmarks);
         file_stream << "RMSE\t" << error << endl;
-        cout << "rmsq: " << error << endl;
+        cout << endl << "landmarks RMSE: " << error << endl;
 
         file_stream << endl << "Sim(3):" << endl;
         file_stream << "\ttranslation:\t" << transform.translation.transpose() << endl;

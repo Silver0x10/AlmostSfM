@@ -34,21 +34,21 @@ void visualize(const vector<Camera>& cameras, const map<int, pr::Vec3f>& landmar
     cameras_cloud.setRenderingProperty( cv::viz::POINT_SIZE, 5 );
     window.showWidget("cameras", cameras_cloud);
 
-    // GT Landmarks visualization (GREEN)
-    std::vector<cv::Point3d> gt_landmarks_cv;
-    for(const auto& l: gt_landmarks) 
-        gt_landmarks_cv.push_back( cv::Point3d(l.second.x(), l.second.y(), l.second.z()) );
-    cv::viz::WCloud gt_landmarks_cloud(gt_landmarks_cv, cv::viz::Color::green());
-    gt_landmarks_cloud.setRenderingProperty( cv::viz::POINT_SIZE, 3 );
-    window.showWidget("gt_landmarks", gt_landmarks_cloud);
+    // // GT Landmarks visualization (GREEN)
+    // std::vector<cv::Point3d> gt_landmarks_cv;
+    // for(const auto& l: gt_landmarks) 
+    //     gt_landmarks_cv.push_back( cv::Point3d(l.second.x(), l.second.y(), l.second.z()) );
+    // cv::viz::WCloud gt_landmarks_cloud(gt_landmarks_cv, cv::viz::Color::green());
+    // gt_landmarks_cloud.setRenderingProperty( cv::viz::POINT_SIZE, 3 );
+    // window.showWidget("gt_landmarks", gt_landmarks_cloud);
 
-    // GT Cameras visualization (VIOLET)
-    std::vector<cv::Point3d> gt_cameras_cv;
-    for(const auto& c: cameras) 
-        gt_cameras_cv.push_back( cv::Point3d( c.gt_position.x(), c.gt_position.y(), c.gt_position.z()) );
-    cv::viz::WCloud gt_cameras_cloud(gt_cameras_cv, cv::viz::Color::violet());
-    gt_cameras_cloud.setRenderingProperty( cv::viz::POINT_SIZE, 3 );
-    window.showWidget("gt_cameras", gt_cameras_cloud);
+    // // GT Cameras visualization (VIOLET)
+    // std::vector<cv::Point3d> gt_cameras_cv;
+    // for(const auto& c: cameras) 
+    //     gt_cameras_cv.push_back( cv::Point3d( c.gt_position.x(), c.gt_position.y(), c.gt_position.z()) );
+    // cv::viz::WCloud gt_cameras_cloud(gt_cameras_cv, cv::viz::Color::violet());
+    // gt_cameras_cloud.setRenderingProperty( cv::viz::POINT_SIZE, 3 );
+    // window.showWidget("gt_cameras", gt_cameras_cloud);
 
     window.spin();
 }
