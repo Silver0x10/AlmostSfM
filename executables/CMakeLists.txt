@@ -14,3 +14,10 @@ target_link_libraries(sfm ${OpenCV_LIBS})
 #     ../src/utils.cpp
 #     ../src/bundle_adjustment.cpp
 # )
+
+add_executable(test_relative_pos test_relative_pos.cpp
+    ../src/relative_position_calculator.cpp
+    ../src/utils.cpp
+    ../src/triangulation.cpp
+)
+target_link_libraries(test_relative_pos ${OpenCV_LIBS})
