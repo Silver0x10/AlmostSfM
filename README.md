@@ -84,14 +84,18 @@ The output of the above command can be found in **out/terminal.txt**
 
 # Tests
 
-- [X] icp_3d  [```executables/test_icp_3d <Dataset Path> <GT Landmarks Path>```]
+- [X] icp_3d (```build/executables/test_icp_3d <Dataset Path> <GT Landmarks Path>```)
   - [X] v2RPY
   - [X] Sim3
     - [X] * operator
     - [X] boxplus
-<div align="center"> <img src="out/icp_test_visualization.png" width="70%"/> </div>
+<div align="center"> 
+  <img src="out/icp_test_visualization.png" width="70%"/> 
+  <img src="out/icp_test_terminal.png" width="70%"/>
+</div>
   
-- [ ] triangulation
+- [X] triangulation (```build/executables/test_triangulation <Dataset Path> <GT Landmarks Path>```)
+<div align="center"> <img src="out/triangulation_test_visualization.png" width="70%"/> </div>
 
 - [ ] calculate_relative_position
   - [X] eight_point_algorithm
