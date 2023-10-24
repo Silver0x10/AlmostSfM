@@ -2,23 +2,10 @@
 
 namespace pr {
 
-    float rmse(const map<int, Vec3f>& landmarks, const map<int, Vec3f>& gt_landmarks) {
-        float total_squared_error = 0.;
-
-        vector<int> ids; 
-        for(const auto& l: landmarks) ids.push_back(l.first);
-        
-        for(int i: ids) {
-            Vec3f delta_i = gt_landmarks.at(i) - landmarks.at(i);
-            total_squared_error += (delta_i.transpose() * delta_i).value();
-        }
-        return sqrt(total_squared_error / ids.size());
-    }
-
-    void eval_map(map<int, Vec3f> landmarks, const map<int, Vec3f>& gt_landmarks, Sim3 transform, string output_dir) {
+    void eval_map(const map<int, Vec3f>& landmarks, map<int, Vec3f> gt_landmarks, Sim3 transform, string output_dir) {
         ofstream file_stream(output_dir.append("/landmarks_errors.txt"));
         
-        for(auto& l: landmarks) l.second = transform * l.second;
+        for(auto& gt_l: gt_landmarks) gt_l.second = transform * gt_l.second;
         
         float error = rmse(landmarks, gt_landmarks);
         file_stream << "RMSE\t" << error << endl;

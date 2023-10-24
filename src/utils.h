@@ -86,6 +86,8 @@ namespace pr {
         return v;
     }
 
+    float rmse(const map<int, Vec3f>& landmarks, const map<int, Vec3f>& gt_landmarks);
+
     void save_landmarks(const map<int, pr::Vec3f>& landmarks, string output_path);
     void save_camera_positions(const vector<Camera>& cameras, string output_path);
     map<int, pr::Vec3f> load_landmarks(string path);

@@ -241,4 +241,18 @@ namespace pr {
         // this->rotation = tRPY2v( v2tRPY(d_rotation) * v2tRPY(this->rotation) );
     }
 
+
+    float rmse(const map<int, Vec3f>& landmarks, const map<int, Vec3f>& gt_landmarks) {
+        float total_squared_error = 0.;
+
+        vector<int> ids; 
+        for(const auto& l: landmarks) ids.push_back(l.first);
+        
+        for(int i: ids) {
+            Vec3f delta_i = gt_landmarks.at(i) - landmarks.at(i);
+            total_squared_error += (delta_i.transpose() * delta_i).value();
+        }
+        return sqrt(total_squared_error / ids.size());
+    }
+
 }

@@ -53,8 +53,11 @@ int main (int argc, char** argv) {
     }
 
     map<int, pr::Vec3f> landmarks = triangulate(cameras);
-    for(auto& l: landmarks) l.second = 0.985 * l.second; // just to make the visualization clearer
     
+    float error = rmse(landmarks, gt_landmarks);
+    cout << "RMSE: " << error << endl;
+
+    for(auto& l: landmarks) l.second = 0.985 * l.second; // just to make the visualization clearer
     visualize(landmarks, gt_landmarks);
 
     return 0;
