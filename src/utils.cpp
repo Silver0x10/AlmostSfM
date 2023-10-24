@@ -118,9 +118,12 @@ namespace pr {
     // ------ end adapted implementation ------ 
 
     Vec3f tRPY2v(const Matrix3f& rot) {
-        float beta = atan2( -rot(2,0), sqrt(pow(rot(2,1), 2) + pow(rot(2,2), 2)) );
-        float alpha = atan2( rot(2,1)/cos(beta) , rot(2,2)/cos(beta) );
-        float gamma = atan2( rot(1,0)/cos(beta) , rot(0,0)/cos(beta) );
+        float alpha = atan2(-rot(1,2), rot(2,2));
+        float beta = asin(rot(0,2));
+        float gamma = atan2(-rot(0,1), rot(0,0));
+        // float beta = atan2( -rot(2,0), sqrt(pow(rot(2,1), 2) + pow(rot(2,2), 2)) );
+        // float alpha = atan2( rot(2,1)/cos(beta) , rot(2,2)/cos(beta) );
+        // float gamma = atan2( rot(1,0)/cos(beta) , rot(0,0)/cos(beta) );
         Vec3f v;
         v << alpha, beta, gamma;
         return v;
@@ -204,21 +207,38 @@ namespace pr {
     }
 
     Sim3::Sim3(float scale, Vec3f rotation, Vec3f translation) {
-        this->scale = scale;
+        this->scale = exp(scale);
         this->rotation = rotation;
         this->translation = translation;
     }
 
+    Matrix4f Sim3::as_matrix() {
+        Matrix4f sim3 = Matrix4f::Zero();
+        sim3.block<3,3>(0,0) = v2tRPY(this->rotation);
+        sim3.block<3,1>(0,3) = this->translation;
+        sim3(3,3) = this->scale;
+        return sim3;
+    }
+
     Vec3f Sim3::operator*(Vec3f v) {
-        return this->scale * (v2tRPY(this->rotation) * v + this->translation);
+        Matrix4f sim3 = this->as_matrix();
+        Vec4f v_hom;
+        v_hom.block<3,1>(0,0) = v;
+        v_hom(3,1) = 1.0;
+        auto res = sim3*v_hom;
+        return res.block<3,1>(0,0) * res(3,0);
+        // return this->scale * (v2tRPY(this->rotation) * v + this->translation);
     }
 
     void Sim3::box_plus(Vec3f d_translation, float d_scale, Vec3f d_rotation) {
-        this->translation = v2tRPY(d_rotation)*this->translation + d_translation*this->scale;
-
-        this->scale *= exp(d_scale);
-
-        this->rotation = tRPY2v( v2tRPY(d_rotation) * v2tRPY(this->rotation) );
+        Sim3 d_x = Sim3(d_scale, d_rotation, d_translation);
+        Matrix4f x_prime = d_x.as_matrix() * this->as_matrix();
+        this->translation = x_prime.block<3,1>(0,3);
+        this->scale = x_prime(3,3);
+        this->rotation = tRPY2v(x_prime.block<3,3>(0,0));
+        // this->translation = v2tRPY(d_rotation)*this->translation + d_translation*this->scale;
+        // this->scale *= exp(d_scale);
+        // this->rotation = tRPY2v( v2tRPY(d_rotation) * v2tRPY(this->rotation) );
     }
 
 }

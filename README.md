@@ -81,3 +81,22 @@ The output of the above command can be found in **out/terminal.txt**
 - Camera positions error values (**out/camera_position_errors.txt**)
 - Camera rotations error values (**out/camera_rotation_errors.txt**)
 - Landmarks RMSE with the used Sim(3) (**out/landmarks_error.txt**)
+
+# Tests
+
+- [X] icp_3d  [```executables/test_icp_3d <Dataset Path> <GT Landmarks Path>```]
+  - [X] v2RPY
+  - [X] Sim3
+    - [X] * operator
+    - [X] boxplus
+<div align="center"> <img src="out/icp_test_visualization.png" width="70%"/> </div>
+  
+- [ ] triangulation
+
+- [ ] calculate_relative_position
+  - [X] eight_point_algorithm
+  - [ ] extract_t
+
+- [ ] init_translations
+
+- [ ] bundle_adjustment

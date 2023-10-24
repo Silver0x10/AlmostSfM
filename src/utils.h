@@ -16,7 +16,9 @@ namespace pr {
   
     // typedef Eigen::Vector3f Vec3f;
     typedef Eigen::Matrix<float, 3, 1> Vec3f;
+    typedef Eigen::Matrix<float, 4, 1> Vec4f;
     typedef Eigen::Matrix<float, 3, 3> Matrix3f;
+    typedef Eigen::Matrix<float, 4, 4> Matrix4f;
 
     struct Keypoint {
         EIGEN_MAKE_ALIGNED_OPERATOR_NEW;
@@ -51,6 +53,8 @@ namespace pr {
             Sim3(float scale, Vec3f rotation, Vec3f translation);
 
             Vec3f operator*(Vec3f v);
+
+            Matrix4f as_matrix();
 
             void box_plus(Vec3f translation, float scale, Vec3f rotation);
     };
