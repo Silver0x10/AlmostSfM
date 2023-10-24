@@ -12,7 +12,7 @@ using namespace pr;
 using namespace Eigen;
 
 void visualize(const map<int, pr::Vec3f>& landmarks, const map<int, pr::Vec3f>& gt_landmarks){
-    cv::viz::Viz3d window("Map visualization");
+    cv::viz::Viz3d window("ICP 3D Test");
 
     // Estimated Landmarks visualization (RED)
     std::vector<cv::Point3d> landmarks_cv;
