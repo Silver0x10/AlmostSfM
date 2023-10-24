@@ -25,7 +25,6 @@ target_link_libraries(test_relative_pos ${OpenCV_LIBS})
 add_executable(test_triangulation test_triangulation.cpp
     ../src/utils.cpp
     ../src/triangulation.cpp
-    ../src/icp_3d.cpp
 )
 target_link_libraries(test_triangulation ${OpenCV_LIBS})
 
