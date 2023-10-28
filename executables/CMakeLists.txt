@@ -10,10 +10,13 @@ add_executable(sfm structure_from_motion.cpp
 )
 target_link_libraries(sfm ${OpenCV_LIBS})
 
-# add_executable(test_BA test_bundle_adjustment.cpp
-#     ../src/utils.cpp
-#     ../src/bundle_adjustment.cpp
-# )
+add_executable(test_BA test_bundle_adjustment.cpp
+    ../src/utils.cpp
+    ../src/bundle_adjustment.cpp
+    ../src/triangulation.cpp
+    ../src/icp_3d.cpp
+)
+target_link_libraries(test_BA ${OpenCV_LIBS})
 
 add_executable(test_relative_pos test_relative_pos.cpp
     ../src/relative_position_calculator.cpp
