@@ -1,4 +1,5 @@
 #pragma once
+
 #include <Eigen/Core>
 #include <vector>
 #include <string>
@@ -24,6 +25,8 @@ namespace pr {
     int count_admissible_points(const Vec3f& t, const Matrix3f& matrixR, const map<int, Vec3f>& landmarks);
 
     Vec3f extract_t(const Camera& cam_i, const Camera& cam_j, const Essential_Matrix& e);
+
+    void find_correspondences(const Camera& cam_i, const Camera& cam_j, vector<cv::Vec3f>& correspondences_i, vector<cv::Vec3f>& correspondences_j);
 
     Vec3f calculate_relative_position(const Camera& cam_i, const Camera& cam_j);
     

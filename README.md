@@ -97,9 +97,10 @@ The output of the above command can be found in **out/terminal.txt**
 - [X] triangulation (```build/executables/test_triangulation <Dataset Path> <GT Landmarks Path>```)
 <div align="center"> <img src="out/triangulation_test_visualization.png" width="70%"/> </div>
 
-- [ ] calculate_relative_position
+- [X] calculate_relative_position (```build/executables/test_relative_pos <Dataset Path> <GT Landmarks Path>```)
   - [X] eight_point_algorithm
-  - [ ] extract_t
+  - [X] extract_t
+<div align="center"> <img src="out/relative_position_test_terminal.png" width="70%"/> </div>
 
 - [ ] init_translations
 
