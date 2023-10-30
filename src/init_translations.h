@@ -3,7 +3,7 @@
 #include <string>
 #include <Eigen/Core>
 #include <Eigen/Dense>
-// #include <Eigen/SVD>
+#include <Eigen/SVD>
 #include "utils.h"
 #include "relative_position_calculator.h"
 

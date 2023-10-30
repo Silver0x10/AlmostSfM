@@ -82,7 +82,7 @@ namespace pr {
         
         map<int, Vec3f> landmarks = triangulate(cam_i, cam_j);
         // Express landmarks in cam_i frame coordinates:
-        // for(auto& l: landmarks) l.second = (Vec3f)(v2tRPY(cam_i.orientation).transpose() * (l.second - cam_i.position));
+        // for(auto& l: landmarks) l.second = v2tRPY(cam_i.orientation).transpose() * (l.second - cam_i.position);
         for(auto& l: landmarks) l.second = v2tRPY(cam_i.orientation) * l.second + cam_i.position;
 
         Vec3f t_final;

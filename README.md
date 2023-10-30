@@ -24,7 +24,7 @@ Final refinement of camera poses and landmarks position formulated as a LS probl
 ## Step 3 - Landmarks Registration
 Estimation of the Sim(3) tranformation between estimated and reference landmark positions [see the [reference](https://gitlab.com/grisetti/probabilistic_robotics_2022_23/-/blob/main/slides/probabilistic_robotics_23b_registration_on_a_manifold.pdf) and **src/icp_3d.\***]
 
-**NOTE_1**: This transformation for the moment has been used only in the landmark evaluation step.
+<!-- **NOTE_1**: This transformation for the moment has been used only in the landmark evaluation step. -->
 
 ## Step 4 - Evaluation methods
 Camera positions, camera orientations and landmark positions are evaluated independently comparing them with the Ground Truth values through the following procedures [see **src/evaluation.\***]:
@@ -58,9 +58,8 @@ At the end a window like that in the above image should appear, showing
 
 <br/> 
 
-**NOTE_2**: wrong estimated positions in the above image :(
+***NOTE_2***: wrong estimated positions in the above image :(
 
-**NOTE_3**: in the current version of *visualize()* in *executables/structure_from_motion* the code regarding the visualization of GT values has been disable to focus on the estamated ones
 
 # **Hot to Run**
 From the *build* directory, execute:
@@ -97,11 +96,11 @@ The output of the above command can be found in **out/terminal.txt**
 - [X] triangulation (```build/executables/test_triangulation <Dataset Path> <GT Landmarks Path>```)
 <div align="center"> <img src="out/triangulation_test_visualization.png" width="70%"/> </div>
 
-- [X] calculate_relative_position (```build/executables/test_relative_pos <Dataset Path> <GT Landmarks Path>```)
+- [ ] calculate_relative_position (```build/executables/test_relative_pos <Dataset Path> <GT Landmarks Path>```)
   - [X] eight_point_algorithm
   - [X] extract_t
 <div align="center"> <img src="out/relative_position_test_terminal.png" width="70%"/> </div>
 
-- [ ] init_translations
+- [X] init_translations (```build/executables/test_init_t <Dataset Path> <GT Landmarks Path>```) --> doesn't works using calculate_relative_position funciton. For the moment i'm using the relative position calculated from GT positions. 
 
 - [ ] bundle_adjustment
