@@ -19,6 +19,11 @@ namespace pr {
         cameras[0].position.setZero();
         int system_size = cameras.size() - 1;
 
+        // TODO: remove. just to randomize the gt for t_ij
+        std::random_device rd;
+        std::mt19937 gen(rd());
+        std::uniform_real_distribution<> dis(0.0, 1.0);
+
         Vec3f state[system_size];
         for(auto& t: state) t.setZero(); 
         auto t_0 = Eigen::Vector3f::Zero();
@@ -30,9 +35,9 @@ namespace pr {
                 if(i == 0 and j == 0) continue;
 
                 // TODO: Maybe it should be given as input to the system and not computed?
-                const auto& t_ij = v2tRPY(cameras[i].orientation).transpose()*(cameras[j].gt_position - cameras[i].gt_position); // GT for checking correctness
-                // const auto& t_ij = calculate_relative_position(cameras[i], cameras[j]); // doen't work :(
-
+                // Vec3f t_ij = v2tRPY(cameras[i].orientation).transpose() * ((cameras[j].gt_position - cameras[i].gt_position) * dis(gen)); // GT for checking correctness
+                Vec3f t_ij = v2tRPY(cameras[i].orientation).transpose() * calculate_relative_position(cameras[i], cameras[j]); // doen't work :(
+                
                 const auto& rot_i = v2tRPY(cameras[i].orientation);
                 const auto& t_i = (i!=0) ? state[i - 1] : t_0;
                 const auto& t_j = (j!=0) ? state[j - 1] : t_0;

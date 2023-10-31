@@ -4,6 +4,7 @@
 #include <Eigen/Core>
 #include <Eigen/Dense>
 #include <Eigen/SVD>
+#include <random>
 #include "utils.h"
 #include "relative_position_calculator.h"
 

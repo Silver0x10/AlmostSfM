@@ -12,17 +12,14 @@
 
 using namespace std;
 using namespace pr;
-// using namespace Eigen;
 
 void visualize(const vector<Camera>& cameras){
     cv::viz::Viz3d window("Translations Initialization Test");
 
     // Estimated Cameras visualization (BLUE)
     std::vector<cv::Point3d> cameras_cv;
-    for(const auto& c: cameras){
+    for(const auto& c: cameras)
         cameras_cv.push_back( cv::Point3d( c.position.x(), c.position.y(), c.position.z()) );
-    }
-    // cv::viz::WCloud cameras_cloud(cameras_cv, cv::viz::Color::red());
     cv::viz::WCloud cameras_cloud(cameras_cv, cv::viz::Color::blue());
     cameras_cloud.setRenderingProperty( cv::viz::POINT_SIZE, 5 );
     window.showWidget("cameras", cameras_cloud);
