@@ -9,6 +9,23 @@ namespace pr {
         this->position = Eigen::Map<Vec3f>(position, 3, 1);
         this->orientation = Eigen::Map<Vec3f>(orientation, 3, 1);
     }
+
+    Camera::Camera() {
+        this->id = -1;
+        this->gt_position = Vec3f::Zero();
+        this->gt_orientation = Vec3f::Zero();
+        this->position = Vec3f::Zero();
+        this->orientation = Vec3f::Zero();
+    }
+
+    Camera::Camera(const Camera& cam){
+        this->id = cam.id;
+        this->gt_position = cam.gt_position;
+        this->gt_orientation = cam.gt_orientation;
+        this->position = cam.position;
+        this->orientation = cam.orientation;
+        this->keypoints = cam.keypoints;
+    }
     
 
     Keypoint::Keypoint(int id, float direction_vector[3]) {

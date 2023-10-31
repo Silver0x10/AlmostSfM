@@ -37,6 +37,10 @@ namespace pr {
         Vec3f orientation;
         vector<Keypoint> keypoints;
         
+        Camera();
+
+        Camera(const Camera& cam);
+
         Camera(int id, float gt_position[3], float gt_orientation[3], float position[3], float orientation[3]);
     };
 
