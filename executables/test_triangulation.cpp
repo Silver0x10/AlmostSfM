@@ -47,7 +47,7 @@ int main (int argc, char** argv) {
         cam.position = cam.gt_position;
         cam.orientation = cam.gt_orientation;
         for(auto& kp: cam.keypoints) {
-            kp.direction_vector = gt_landmarks[kp.id] - cam.position;
+            kp.direction_vector = v2tRPY(cam.orientation).transpose() * (gt_landmarks[kp.id] - cam.position); // gt dir vector in camera frame
             kp.direction_vector.normalize();
         }
     }
