@@ -12,7 +12,9 @@ namespace pr {
 
         for(const Camera& cam: cameras){
             for(const Keypoint& kp: cam.keypoints){
-                auto dir = v2tRPY(cam.orientation) * kp.direction_vector; // express direction vector wrt "World" frame
+
+                auto dir = v2tRPY(cam.orientation) * kp.direction_vector; // express direction vector wrt "World" frame:
+
                 if(landmarks.find(kp.id) == landmarks.end()) {
                     Vec3f landmark_position;
                     landmark_position.setZero();
