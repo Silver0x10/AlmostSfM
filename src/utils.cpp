@@ -258,6 +258,12 @@ namespace pr {
         // this->rotation = tRPY2v( v2tRPY(d_rotation) * v2tRPY(this->rotation) );
     }
 
+    Sim3 Sim3::inverse(){
+        double scale = log(1/this->scale);
+        Vec3f rotation = tRPY2v( v2tRPY(this->rotation).transpose() );
+        Vec3f translation = -this->translation;
+        return Sim3(scale, rotation, translation);
+    }
 
     float rmse(const map<int, Vec3f>& landmarks, const map<int, Vec3f>& gt_landmarks) {
         float total_squared_error = 0.;

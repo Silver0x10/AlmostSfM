@@ -60,6 +60,8 @@ namespace pr {
 
             Matrix4f as_matrix();
 
+            Sim3 inverse();
+
             void box_plus(Vec3f translation, float scale, Vec3f rotation);
     };
     
