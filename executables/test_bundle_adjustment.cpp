@@ -51,10 +51,12 @@ void visualize(const vector<Camera>& cameras, const map<int, pr::Vec3f>& landmar
 int main (int argc, char** argv) {
     cout << "Test BundleAdjustment" << endl;
 
-    string dataset_path = "../../dataset_and_info/input_BA.txt";
+    // string dataset_path = "../../dataset_and_info/input_BA.txt";
+    string dataset_path = argv[1];
     vector<Camera> cameras = load_data(dataset_path);
 
-    string gt_landmark_positions = "../../dataset_and_info/GT_landmarks.txt";
+    // string gt_landmark_positions = "../../dataset_and_info/GT_landmarks.txt";
+    string gt_landmark_positions = argv[2];
     map<int, pr::Vec3f> gt_landmarks = load_landmarks(gt_landmark_positions);
 
     auto landmarks = triangulate(cameras);

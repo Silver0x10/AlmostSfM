@@ -13,11 +13,11 @@ using namespace pr;
 int main (int argc, char** argv) {
     cout << "Test relative position estimation:" << endl;
 
-    // string dataset_path = argv[1]; // "../../dataset_and_info/dataset.txt";
-    string dataset_path = "../../dataset_and_info/dataset.txt";
+    string dataset_path = argv[1]; // "../../dataset_and_info/dataset.txt";
+    // string dataset_path = "../../dataset_and_info/dataset.txt";
     vector<Camera> cameras = load_data(dataset_path);
-    // string gt_landmark_positions = argv[2]; // "../../dataset_and_info/GT_landmarks.txt";
-    string gt_landmark_positions = "../../dataset_and_info/GT_landmarks.txt";
+    string gt_landmark_positions = argv[2]; // "../../dataset_and_info/GT_landmarks.txt";
+    // string gt_landmark_positions = "../../dataset_and_info/GT_landmarks.txt";
     map<int, pr::Vec3f> gt_landmarks = load_landmarks(gt_landmark_positions);
     
     for(auto& cam: cameras) {

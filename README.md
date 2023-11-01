@@ -100,4 +100,4 @@ In the *out* directory it's possible to find the output produced by the followin
 - [X] init_translations (```build/executables/test_init_t <Dataset Path> <GT Landmarks Path>```) --> **doesn't works using calculate_relative_position funciton**. For the moment i'm using the relative position calculated from GT positions. 
 <div align="center"> <img src="out/init_translations_test_visualization.png" width="70%"/> </div>
 
-- [ ] bundle_adjustment
+- [ ] bundle_adjustment (```build/executables/test_BA <Dataset Path> <GT Landmarks Path>```)
