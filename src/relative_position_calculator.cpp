@@ -42,64 +42,63 @@ namespace pr {
     }
 
     /* Counts how many landmarks are in the FOV of both cameras */
-    int count_admissible_points(const Vec3f& t, const Matrix3f& matrixR, const map<int, Vec3f>& landmarks) {
+    int landmarks_in_front_of_two_cameras(const Camera& cam0, const Camera& cam1, const map<int, Vec3f>& landmarks) {
         int admissible_points = 0;
         
-        // auto r3 = matrixR.row(2);
         for(auto& l: landmarks) {
-            // TODO: understand why it works without checking if landmarks are in front of cam_i
-            bool in_front_of_the_camera_i =  true; 
-            // bool in_front_of_the_camera_i =  l.second[2] > 0;
+            // bool in_front_of_the_cam0 =  true; 
+            Vec3f l_wrt_cam0 = v2tRPY(cam0.orientation).transpose() * (l.second - cam0.position);
+            bool in_front_of_the_cam0 =  l_wrt_cam0[2] >= 0;
 
-            bool in_front_of_the_camera_j =  (matrixR*l.second + t)[2] > 0;
-            // bool in_front_of_the_camera_j =  ( r3 * (l.second + t) ) > 0;
+            // bool in_front_of_the_cam1 =  true;
+            Vec3f l_wrt_cam1 = v2tRPY(cam1.orientation).transpose() * (l.second - cam1.position);
+            bool in_front_of_the_cam1 =  l_wrt_cam1[2] >= 0;
             
-            if(in_front_of_the_camera_i and in_front_of_the_camera_j) ++admissible_points;
+            if(in_front_of_the_cam0 and in_front_of_the_cam1) ++admissible_points;
         }
 
         return admissible_points;
     }
 
 
-    Vec3f extract_t(const Camera& cam_i, const Camera& cam_j, const Essential_Matrix& e) {
+    Vec3f extract_t(Camera cam_i, Camera cam_j, const Essential_Matrix& e) {
         Matrix3f matrixW;
         matrixW << 0,-1, 0,
-                   1, 0, 0,
-                   0, 0, 1;
+                    1, 0, 0,
+                    0, 0, 1;
 
-        vector<Matrix3f> solutions_for_R;
-        Matrix3f matrixR_0 = e.u * matrixW * e.vt; 
-        solutions_for_R.push_back(matrixR_0);
-        Matrix3f matrixR_1 = e.u * matrixW.transpose() * e.vt; 
-        solutions_for_R.push_back(matrixR_1);
+        // vector<Matrix3f> solutions_for_R;
+        // Matrix3f matrixR_0 = e.u * matrixW * e.vt; 
+        // solutions_for_R.push_back(matrixR_0);
+        // Matrix3f matrixR_1 = e.u * matrixW.transpose() * e.vt; 
+        // solutions_for_R.push_back(matrixR_1);
 
         vector<Vec3f> solutions_for_t;
-        // Vec3f t_0 = e.u.col(2); // should be correct, but it doesn't work :( ( TODO: understand why )
+        // Vec3f t_0 = e.u.col(2); // should be ok as well
         Vec3f t_0 = skew2v(e.vt.transpose() * e.s * matrixW.transpose() * e.vt); 
         solutions_for_t.push_back(t_0);
         Vec3f t_1 = -t_0;
         solutions_for_t.push_back(t_1);
-        
-        map<int, Vec3f> landmarks = triangulate(cam_i, cam_j);
-        // Express landmarks in cam_i frame coordinates:
-        // for(auto& l: landmarks) l.second = v2tRPY(cam_i.orientation).transpose() * (l.second - cam_i.position);
-        for(auto& l: landmarks) l.second = v2tRPY(cam_i.orientation) * l.second + cam_i.position;
 
         Vec3f t_final;
         Matrix3f matrixR_final;
         int max_admissible_points = 0;
         for(const Vec3f& sol_t: solutions_for_t) {
-            for(const Matrix3f& sol_R: solutions_for_R) {
-                int admissible_points = count_admissible_points(sol_t, sol_R, landmarks);
-                // cout << admissible_points << "\t";
-                if( admissible_points > max_admissible_points ) {
-                    max_admissible_points = admissible_points;
-                    t_final = sol_t;
-                    matrixR_final = sol_R;
-                }
+            cam_j.position = cam_i.position + sol_t;
+            
+            vector<Camera> cameras;
+            cameras.push_back(cam_i);
+            cameras.push_back(cam_j);
+            map<int, Vec3f> landmarks = triangulate(cameras);
+
+            int admissible_points = landmarks_in_front_of_two_cameras(cam_i, cam_j, landmarks);
+            // cout << admissible_points << "\tof " << landmarks.size() << "\t|\t\t" << sol_t.transpose() << endl;
+            if( admissible_points > max_admissible_points ) {
+                max_admissible_points = admissible_points;
+                t_final = sol_t;
             }
         }
-        // cout << endl << endl;
+        // cout <<  endl;
         return t_final;
     }
 
@@ -119,6 +118,7 @@ namespace pr {
                     k = j+1;
                 }
         }
+        // cout << "correspondences: " << correspondences_i.size() <<  endl;
     }
 
 
@@ -126,9 +126,9 @@ namespace pr {
         vector<cv::Vec3f> correspondences_i;
         vector<cv::Vec3f> correspondences_j;
         find_correspondences(cam_i, cam_j, correspondences_i, correspondences_j);
-
+        
         auto essential_matrix = eight_point_algorithm(correspondences_i, correspondences_j);
-    
+
         auto t_ij = extract_t(cam_i, cam_j, essential_matrix);
                 
         return t_ij;

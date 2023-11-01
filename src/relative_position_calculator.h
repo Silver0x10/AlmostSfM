@@ -22,9 +22,9 @@ namespace pr {
 
     Essential_Matrix eight_point_algorithm(vector<cv::Vec3f>& dir_vectors_i, vector<cv::Vec3f>& dir_vectors_j);
     
-    int count_admissible_points(const Vec3f& t, const Matrix3f& matrixR, const map<int, Vec3f>& landmarks);
+    int landmarks_in_front_of_two_cameras(const Camera& cam0, const Camera& cam1, const map<int, Vec3f>& landmarks);
 
-    Vec3f extract_t(const Camera& cam_i, const Camera& cam_j, const Essential_Matrix& e);
+    Vec3f extract_t(Camera cam_i, Camera cam_j, const Essential_Matrix& e);
 
     void find_correspondences(const Camera& cam_i, const Camera& cam_j, vector<cv::Vec3f>& correspondences_i, vector<cv::Vec3f>& correspondences_j);
 

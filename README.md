@@ -56,7 +56,7 @@ At the end a window like that in the above image should appear, showing:
 
 <br/> 
 
-***NOTE_2***: wrong estimated positions in the above image :(
+**NOTE:** wrong **positions initialization** using relative pose estimate. The visualization above was produced using GT relative poses.
 
 
 # **Hot to Run**

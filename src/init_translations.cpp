@@ -31,7 +31,7 @@ namespace pr {
 
                 // TODO: Fix relative pose estimation
                 Vec3f t_ij = v2tRPY(cameras[i].orientation).transpose() * ((cameras[j].gt_position - cameras[i].gt_position)); // GT for checking correctness
-                // Vec3f t_ij = v2tRPY(cameras[i].orientation).transpose() * calculate_relative_position(cameras[i], cameras[j]); // doen't work :(
+                // Vec3f t_ij = calculate_relative_position(cameras[i], cameras[j]); // doen't work :(
                 
                 const auto& rot_i = v2tRPY(cameras[i].orientation);
                 const auto& t_i = (i!=0) ? state[i - 1] : t_0;
