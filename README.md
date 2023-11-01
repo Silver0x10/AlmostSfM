@@ -7,7 +7,7 @@ The initialized translations are extracted from the null space of the H matrix o
 
 The relative position between each pair of cameras is required for epipolar constraint evaluation. It is estimated through the following procedure [see **src/relative_position_calculator.\***]:
 1) *8-point-algorithm* to estimate the *essential matrix* using corresponding direction vectors of the two cameras
-2) Relative *position extraction* from the essential matrix. It is selected among the possible solutions tanking the one with the highest number of points in front of the camera. This has been done triangulating the two corresponding direction vectors for each landmark and then projecting it along the z-axis of the camera (3rd row of the analyzed rotation matrix). 
+2) Relative *position extraction* from the essential matrix. It is selected among the possible solutions tanking the one with the highest number of points in front of the camera. This has been done triangulating the two corresponding direction vectors for each landmark and then projecting it along the z-axis of each camera. 
 
 
 ## Step 1 - Landmarks Triangulation
@@ -16,10 +16,7 @@ To get the 3D *position of each landmark* using *direction vectors* to calculate
 Each position is calculated solving a LS problem using all the direction vectors corresponding to the same landmark coming from all the available cameras.
 
 ## Step 2 - Bundle Adjustment
-Final refinement of camera poses and landmarks position formulated as a LS problem [see **src/bundle_adjustment.\***] trying to minime the following errors:
-- **Pose-Pose error**: epipolar constraint between each camera pair (as in step 0)
-- **Pose-Landmark error**: cross product between measured and predicted direction vectors
-
+Final refinement of camera poses and landmarks position formulated as a LS problem [see **src/bundle_adjustment.\***] trying to minimize the **Pose-Landmark error** (cross product between measured and predicted direction vectors).
 
 ## Step 3 - Landmarks Registration
 Estimation of the Sim(3) tranformation between estimated and reference landmark positions [see the [reference](https://gitlab.com/grisetti/probabilistic_robotics_2022_23/-/blob/main/slides/probabilistic_robotics_23b_registration_on_a_manifold.pdf) and **src/icp_3d.\***]
@@ -50,7 +47,8 @@ For each camera pair:
 
 ## Step 5 - Visualization
 <div align="center"> <img src="out/visualization.png" width="70%"/> </div>
-At the end a window like that in the above image should appear, showing
+At the end a window like that in the above image should appear, showing:
+
 - Estimated camera positions in blue
 - Estimated landmark positions in red
 - GT camera positions in violet
@@ -62,24 +60,22 @@ At the end a window like that in the above image should appear, showing
 
 
 # **Hot to Run**
-From the *build* directory, execute:
 ```bash
- ./executables/sfm ../dataset_and_info/dataset.txt ../dataset_and_info/GT_landmarks.txt ../out  5
+ ./build/executables/sfm <Dataset path> <GT_Landmarks path> <Output directory>  <BundleAdjustment rounds>
 ```
-The arguments are (in order):
-1) Dataset path
-2) Landmarks ground truth path
-3) Output directory
-4) Bundle Adjustments rounds
 
-The output of the above command can be found in **out/terminal.txt**
+## **Final outputs**
+In the *out* directory it's possible to find the output produced by the following command:
+```bash
+ ./build/executables/sfm ../dataset_and_info/dataset.txt dataset_and_info/GT_landmarks.txt ./out  5
+```
 
-## **Final output**
-- Global position of each camera (**out/cameras.txt**)
-- Global position of each landmark (**out/landmarks.txt**)
-- Camera positions error values (**out/camera_position_errors.txt**)
-- Camera rotations error values (**out/camera_rotation_errors.txt**)
-- Landmarks RMSE with the used Sim(3) (**out/landmarks_error.txt**)
+- (**cameras.txt**) Global position of each camera 
+- (**landmarks.txt**) Global position of each landmark 
+- (**camera_position_errors.txt**) Camera positions error values 
+- (**camera_rotation_errors.txt**) Camera rotations error values 
+- (**landmarks_error.txt**) Landmarks RMSE with the used Sim(3) 
+- (**terminal.txt**) Output printed on the terminal
 
 # Tests
 
