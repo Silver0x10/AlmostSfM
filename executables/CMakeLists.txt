@@ -22,6 +22,7 @@ target_link_libraries(test_relative_pos ${OpenCV_LIBS})
 add_executable(test_init_t test_init_translations.cpp
     ../src/relative_position_calculator.cpp
     ../src/utils.cpp
+    ../src/icp_3d.cpp
     ../src/triangulation.cpp
     ../src/init_translations.cpp
 )

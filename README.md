@@ -101,6 +101,7 @@ The output of the above command can be found in **out/terminal.txt**
   - [X] extract_t
 <div align="center"> <img src="out/relative_position_test_terminal.png" width="70%"/> </div>
 
-- [X] init_translations (```build/executables/test_init_t <Dataset Path> <GT Landmarks Path>```) --> doesn't works using calculate_relative_position funciton. For the moment i'm using the relative position calculated from GT positions. 
+- [X] init_translations (```build/executables/test_init_t <Dataset Path> <GT Landmarks Path>```) --> **doesn't works using calculate_relative_position funciton**. For the moment i'm using the relative position calculated from GT positions. 
+<div align="center"> <img src="out/init_translations_test_visualization.png" width="70%"/> </div>
 
 - [ ] bundle_adjustment

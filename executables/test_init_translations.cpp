@@ -7,6 +7,7 @@
 #include <opencv2/viz.hpp>
 #include "utils.h"
 #include "relative_position_calculator.h"
+#include "icp_3d.h"
 #include "init_translations.h"
 
 
@@ -38,18 +39,22 @@ void visualize(const vector<Camera>& cameras){
 int main (int argc, char** argv) {
     cout << "Test Translations Initialization:" << endl;
 
-    string dataset_path = "../../dataset_and_info/dataset.txt";
-    // string dataset_path = argv[1]; // "../../dataset_and_info/dataset.txt";
+    string dataset_path = argv[1]; // "./dataset_and_info/dataset.txt";
     vector<Camera> cameras = load_data(dataset_path);
-    string gt_landmark_positions = "../../dataset_and_info/GT_landmarks.txt";
-    // string gt_landmark_positions = argv[2]; // "../../dataset_and_info/GT_landmarks.txt";
+    string gt_landmark_positions = argv[2]; // "./dataset_and_info/GT_landmarks.txt";
     map<int, pr::Vec3f> gt_landmarks = load_landmarks(gt_landmark_positions);
 
     init_translations(cameras);
-    Vec3f delta; delta << 0.1, 0.1, 0.1;
-    for(int i=0; i < (int)cameras.size(); i++){
-        cameras[i].position = cameras[i].position * 70 + cameras[0].gt_position - delta;
+    
+    cout << endl << "Doing ICP for camera positions..." << endl;
+    map<int, Vec3f> cam_positions;
+    map<int, Vec3f> cam_gt_positions;
+    for(const auto& cam: cameras) {
+        cam_positions.insert({cam.id, cam.position});
+        cam_gt_positions.insert({cam.id, cam.gt_position});
     }
+    auto transform = icp_3d(cam_positions, cam_gt_positions, 10);
+    for(auto& cam: cameras) cam.gt_position = transform * cam.gt_position;
 
     visualize(cameras);
 
