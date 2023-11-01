@@ -31,7 +31,7 @@ namespace pr {
         Eigen::MatrixXf b(3*system_size, 1);
 
         for (int iteration = 0; iteration < rounds; iteration++) {
-            cout << "BA iteration: " << iteration << endl;
+            cout << "BA iteration: " << iteration << "\t->\t";
             matrix_H.setZero();
             b.setZero();
             float chi_tot = 0.0;

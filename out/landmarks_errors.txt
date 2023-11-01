@@ -1,6 +1,6 @@
-RMSE	6.76994
+RMSE	0.497131
 
 Sim(3):
-	translation:	-0.103396 0.0686321  0.491354
-	scale:	1
-	rotation angles:	 0 -0  0
+	translation:	 -0.0670249 -0.00166583   0.0878921
+	scale:	0.000256807
+	rotation angles:	-0.301614 -0.471797 -0.160289

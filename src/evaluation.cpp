@@ -27,6 +27,7 @@ namespace pr {
     void eval_camera_rotations(const vector<Camera>& cameras, string output_dir) {
         float total_error = 0;
         ofstream file_stream(output_dir.append("/camera_rotation_errors.txt"));
+        file_stream << "id_camera_i\tid_camera_j\trotation_error" << endl;
         for(int i=0; i<(int)cameras.size(); i++)
             for(int j=0; j<(int)cameras.size(); j++)
                 if(i != j) {
@@ -49,6 +50,7 @@ namespace pr {
     */
     void eval_camera_positions(const vector<Camera>& cameras, string output_dir) {
         ofstream file_stream(output_dir.append("/camera_position_errors.txt"));
+        file_stream << "id_camera_i\tid_camera_j\tposition_error" << endl;
         for(int i=0; i<(int)cameras.size(); i++)
             for(int j=0; j<(int)cameras.size(); j++)
                 if(i != j) {
