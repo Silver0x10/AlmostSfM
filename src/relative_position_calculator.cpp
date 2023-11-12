@@ -76,6 +76,9 @@ namespace pr {
         vector<Vec3d> solutions_for_t;
         // Vec3f t_0 = e.u.col(2); // should be ok as well
         Vec3d t_0 = skew2v(e.vt.transpose() * e.s * matrixW.transpose() * e.vt); 
+
+        // return t_0;
+        
         solutions_for_t.push_back(t_0);
         Vec3d t_1 = -t_0;
         solutions_for_t.push_back(t_1);
@@ -85,6 +88,8 @@ namespace pr {
         int max_admissible_points = 0;
         for(const Vec3d& sol_t: solutions_for_t) {
             cam_i.position.setZero();
+            cam_j.position = sol_t;
+            // cam_j.position = cam_i.position + sol_t;
             
             vector<Camera> cameras;
             cameras.push_back(cam_i);
@@ -128,8 +133,14 @@ namespace pr {
         find_correspondences(cam_i, cam_j, correspondences_i, correspondences_j);
         
         auto essential_matrix = eight_point_algorithm(correspondences_i, correspondences_j);
-
+        
         auto t_ij = extract_t(cam_i, cam_j, essential_matrix);
+        // cv::Mat E, R1, R2;
+        // cv::eigen2cv(essential_matrix.e, E);
+        // cv::Vec3d t;
+        // cv::decomposeEssentialMat(E, R1, R2, t);
+        // Vec3d t_ij;
+        // cv::cv2eigen(t, t_ij);
                 
         return t_ij;
     }
