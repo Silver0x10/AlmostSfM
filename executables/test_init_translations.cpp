@@ -42,13 +42,13 @@ int main (int argc, char** argv) {
     string dataset_path = argv[1]; // "./dataset_and_info/dataset.txt";
     vector<Camera> cameras = load_data(dataset_path);
     string gt_landmark_positions = argv[2]; // "./dataset_and_info/GT_landmarks.txt";
-    map<int, pr::Vec3f> gt_landmarks = load_landmarks(gt_landmark_positions);
+    map<int, pr::Vec3d> gt_landmarks = load_landmarks(gt_landmark_positions);
 
     init_translations(cameras);
     
     cout << endl << "Doing ICP for camera positions..." << endl;
-    map<int, Vec3f> cam_positions;
-    map<int, Vec3f> cam_gt_positions;
+    map<int, Vec3d> cam_positions;
+    map<int, Vec3d> cam_gt_positions;
     for(const auto& cam: cameras) {
         cam_positions.insert({cam.id, cam.position});
         cam_gt_positions.insert({cam.id, cam.gt_position});

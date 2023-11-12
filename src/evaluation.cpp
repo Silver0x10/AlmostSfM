@@ -2,12 +2,12 @@
 
 namespace pr {
 
-    void eval_map(const map<int, Vec3f>& landmarks, map<int, Vec3f> gt_landmarks, Sim3 transform, string output_dir) {
+    void eval_map(const map<int, Vec3d>& landmarks, map<int, Vec3d> gt_landmarks, Sim3 transform, string output_dir) {
         ofstream file_stream(output_dir.append("/landmarks_errors.txt"));
         
         for(auto& gt_l: gt_landmarks) gt_l.second = transform * gt_l.second;
         
-        float error = rmse(landmarks, gt_landmarks);
+        double error = rmse(landmarks, gt_landmarks);
         file_stream << "RMSE\t" << error << endl;
         cout << "Landmarks RMSE: " << error << endl;
 
@@ -25,7 +25,7 @@ namespace pr {
         - compare it with delta of your solution in this way trace(eye(3) - R_delta^T * R_delta_gt)
     */
     void eval_camera_rotations(const vector<Camera>& cameras, string output_dir) {
-        float total_error = 0;
+        double total_error = 0;
         ofstream file_stream(output_dir.append("/camera_rotation_errors.txt"));
         file_stream << "id_camera_i\tid_camera_j\trotation_error" << endl;
         for(int i=0; i<(int)cameras.size(); i++)
@@ -33,7 +33,7 @@ namespace pr {
                 if(i != j) {
                     auto R_delta = v2tRPY(cameras[i].orientation).transpose() * v2tRPY(cameras[j].orientation);
                     auto R_delta_gt = v2tRPY(cameras[i].gt_orientation).transpose() * v2tRPY(cameras[j].gt_orientation);
-                    auto error = (Matrix3f::Identity(3,3) - R_delta.transpose() * R_delta_gt).trace();
+                    auto error = (Matrix3d::Identity(3,3) - R_delta.transpose() * R_delta_gt).trace();
                     file_stream << i << "\t" << j << "\t" << error << endl;
                     total_error += error;
                 }
@@ -54,8 +54,8 @@ namespace pr {
         for(int i=0; i<(int)cameras.size(); i++)
             for(int j=0; j<(int)cameras.size(); j++)
                 if(i != j) {
-                    Vec3f t_ij = v2tRPY(cameras[i].orientation).transpose() * ( cameras[j].position - cameras[i].position );
-                    Vec3f t_ij_gt = v2tRPY(cameras[i].gt_orientation).transpose() * ( cameras[j].gt_position - cameras[i].gt_position );
+                    Vec3d t_ij = v2tRPY(cameras[i].orientation).transpose() * ( cameras[j].position - cameras[i].position );
+                    Vec3d t_ij_gt = v2tRPY(cameras[i].gt_orientation).transpose() * ( cameras[j].gt_position - cameras[i].gt_position );
 
                     auto ratio_ij = t_ij.squaredNorm() / t_ij_gt.squaredNorm();
                     file_stream << i << "\t" << j << "\t" << ratio_ij << endl;
@@ -63,7 +63,7 @@ namespace pr {
         file_stream.close();
     }
 
-    void evaluation(const vector<Camera>& cameras, const map<int, Vec3f>& landmarks, const map<int, Vec3f>& gt_landmarks, const Sim3& transform, string output_dir) {
+    void evaluation(const vector<Camera>& cameras, const map<int, Vec3d>& landmarks, const map<int, Vec3d>& gt_landmarks, const Sim3& transform, string output_dir) {
         eval_camera_rotations(cameras, output_dir);
         eval_camera_positions(cameras, output_dir);
         eval_map(landmarks, gt_landmarks, transform, output_dir);

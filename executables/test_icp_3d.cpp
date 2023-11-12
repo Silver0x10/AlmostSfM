@@ -11,7 +11,7 @@ using namespace std;
 using namespace pr;
 using namespace Eigen;
 
-void visualize(const map<int, pr::Vec3f>& landmarks, const map<int, pr::Vec3f>& gt_landmarks){
+void visualize(const map<int, pr::Vec3d>& landmarks, const map<int, pr::Vec3d>& gt_landmarks){
     cv::viz::Viz3d window("ICP 3D Test");
 
     // Estimated Landmarks visualization (RED)
@@ -41,20 +41,20 @@ int main (int argc, char** argv) {
 
 
     string gt_landmark_positions = argv[2]; //"../../dataset_and_info/GT_landmarks.txt";
-    map<int, pr::Vec3f> gt_landmarks = load_landmarks(gt_landmark_positions);
+    map<int, pr::Vec3d> gt_landmarks = load_landmarks(gt_landmark_positions);
 
-    float scale;
-    Vec3f rotation; 
-    Vec3f translation; 
+    double scale;
+    Vec3d rotation; 
+    Vec3d translation; 
 
     scale = log(0.5);
     rotation << -M_PI/2, M_PI/2, -M_PI;
     translation << 0.1, 0.2, 0.5;
     Sim3 transform = Sim3(scale, rotation, translation);
 
-    map<int, pr::Vec3f> landmarks;
+    map<int, pr::Vec3d> landmarks;
     for(auto const& gt_l: gt_landmarks){
-        Vec3f transformed_gt_l = transform * gt_l.second;
+        Vec3d transformed_gt_l = transform * gt_l.second;
         landmarks.insert({gt_l.first, transformed_gt_l});
     }
 

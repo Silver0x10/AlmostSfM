@@ -3,22 +3,22 @@
 
 namespace pr {
 
-    Essential_Matrix eight_point_algorithm(vector<cv::Vec3f>& dir_vectors_i, vector<cv::Vec3f>& dir_vectors_j){
+    Essential_Matrix eight_point_algorithm(vector<cv::Vec3d>& dir_vectors_i, vector<cv::Vec3d>& dir_vectors_j){
 
-        cv::normalize(dir_vectors_i, dir_vectors_i);
-        cv::normalize(dir_vectors_j, dir_vectors_j);
+        // cv::normalize(dir_vectors_i, dir_vectors_i);
+        // cv::normalize(dir_vectors_j, dir_vectors_j);
 
-        cv::Mat A(dir_vectors_i.size(), 9, CV_32F);
+        cv::Mat A(dir_vectors_i.size(), 9, CV_64F);
         for (size_t i = 0; i < dir_vectors_i.size(); ++i) {
-            A.at<float>(i, 0) = dir_vectors_j[i][0] * dir_vectors_i[i][0];
-            A.at<float>(i, 1) = dir_vectors_j[i][0] * dir_vectors_i[i][1];
-            A.at<float>(i, 2) = dir_vectors_j[i][0] * dir_vectors_i[i][2];
-            A.at<float>(i, 3) = dir_vectors_j[i][1] * dir_vectors_i[i][0];
-            A.at<float>(i, 4) = dir_vectors_j[i][1] * dir_vectors_i[i][1];
-            A.at<float>(i, 5) = dir_vectors_j[i][1] * dir_vectors_i[i][2];
-            A.at<float>(i, 6) = dir_vectors_j[i][2] * dir_vectors_i[i][0];
-            A.at<float>(i, 7) = dir_vectors_j[i][2] * dir_vectors_i[i][1];
-            A.at<float>(i, 8) = dir_vectors_j[i][2] * dir_vectors_i[i][2];
+            A.at<double>(i, 0) = dir_vectors_j[i][0] * dir_vectors_i[i][0];
+            A.at<double>(i, 1) = dir_vectors_j[i][0] * dir_vectors_i[i][1];
+            A.at<double>(i, 2) = dir_vectors_j[i][0] * dir_vectors_i[i][2];
+            A.at<double>(i, 3) = dir_vectors_j[i][1] * dir_vectors_i[i][0];
+            A.at<double>(i, 4) = dir_vectors_j[i][1] * dir_vectors_i[i][1];
+            A.at<double>(i, 5) = dir_vectors_j[i][1] * dir_vectors_i[i][2];
+            A.at<double>(i, 6) = dir_vectors_j[i][2] * dir_vectors_i[i][0];
+            A.at<double>(i, 7) = dir_vectors_j[i][2] * dir_vectors_i[i][1];
+            A.at<double>(i, 8) = dir_vectors_j[i][2] * dir_vectors_i[i][2];
         }
 
         cv::Mat u, s, vt;
@@ -28,12 +28,12 @@ namespace pr {
         
         // enforce singularity
         cv::SVD::compute(essential_matrix, s, u, vt);
-        s.at<float>(0, 2) = 0.0;
+        s.at<double>(0, 2) = 0.0;
 
         essential_matrix = u * cv::Mat::diag(s) * vt;
 
         Essential_Matrix structE;
-        cv::cv2eigen(essential_matrix, structE.e); // OR structE.e = Eigen::Map<Eigen::Matrix<float, 3, 3, Eigen::RowMajor>>(essential_matrix.ptr<float>(), essential_matrix.rows, essential_matrix.cols);
+        cv::cv2eigen(essential_matrix, structE.e); // OR structE.e = Eigen::Map<Eigen::Matrix<float, 3, 3,  ::RowMajor>>(essential_matrix.ptr<float>(), essential_matrix.rows, essential_matrix.cols);
         cv::cv2eigen(u, structE.u);
         cv::cv2eigen(cv::Mat::diag(s), structE.s);
         cv::cv2eigen(vt, structE.vt);
@@ -42,16 +42,16 @@ namespace pr {
     }
 
     /* Counts how many landmarks are in the FOV of both cameras */
-    int landmarks_in_front_of_two_cameras(const Camera& cam0, const Camera& cam1, const map<int, Vec3f>& landmarks) {
+    int landmarks_in_front_of_two_cameras(const Camera& cam0, const Camera& cam1, const map<int, Vec3d>& landmarks) {
         int admissible_points = 0;
         
         for(auto& l: landmarks) {
             // bool in_front_of_the_cam0 =  true; 
-            Vec3f l_wrt_cam0 = v2tRPY(cam0.orientation).transpose() * (l.second - cam0.position);
+            Vec3d l_wrt_cam0 = v2tRPY(cam0.orientation).transpose() * (l.second - cam0.position);
             bool in_front_of_the_cam0 =  l_wrt_cam0[2] >= 0;
 
             // bool in_front_of_the_cam1 =  true;
-            Vec3f l_wrt_cam1 = v2tRPY(cam1.orientation).transpose() * (l.second - cam1.position);
+            Vec3d l_wrt_cam1 = v2tRPY(cam1.orientation).transpose() * (l.second - cam1.position);
             bool in_front_of_the_cam1 =  l_wrt_cam1[2] >= 0;
             
             if(in_front_of_the_cam0 and in_front_of_the_cam1) ++admissible_points;
@@ -61,35 +61,35 @@ namespace pr {
     }
 
 
-    Vec3f extract_t(Camera cam_i, Camera cam_j, const Essential_Matrix& e) {
-        Matrix3f matrixW;
+    Vec3d extract_t(Camera cam_i, Camera cam_j, const Essential_Matrix& e) {
+        Matrix3d matrixW;
         matrixW << 0,-1, 0,
                     1, 0, 0,
                     0, 0, 1;
 
-        // vector<Matrix3f> solutions_for_R;
-        // Matrix3f matrixR_0 = e.u * matrixW * e.vt; 
+        // vector<Matrix3d> solutions_for_R;
+        // Matrix3d matrixR_0 = e.u * matrixW * e.vt; 
         // solutions_for_R.push_back(matrixR_0);
-        // Matrix3f matrixR_1 = e.u * matrixW.transpose() * e.vt; 
+        // Matrix3d matrixR_1 = e.u * matrixW.transpose() * e.vt; 
         // solutions_for_R.push_back(matrixR_1);
 
-        vector<Vec3f> solutions_for_t;
+        vector<Vec3d> solutions_for_t;
         // Vec3f t_0 = e.u.col(2); // should be ok as well
-        Vec3f t_0 = skew2v(e.vt.transpose() * e.s * matrixW.transpose() * e.vt); 
+        Vec3d t_0 = skew2v(e.vt.transpose() * e.s * matrixW.transpose() * e.vt); 
         solutions_for_t.push_back(t_0);
-        Vec3f t_1 = -t_0;
+        Vec3d t_1 = -t_0;
         solutions_for_t.push_back(t_1);
 
-        Vec3f t_final;
-        Matrix3f matrixR_final;
+        Vec3d t_final;
+        Matrix3d matrixR_final;
         int max_admissible_points = 0;
-        for(const Vec3f& sol_t: solutions_for_t) {
-            cam_j.position = cam_i.position + sol_t;
+        for(const Vec3d& sol_t: solutions_for_t) {
+            cam_i.position.setZero();
             
             vector<Camera> cameras;
             cameras.push_back(cam_i);
             cameras.push_back(cam_j);
-            map<int, Vec3f> landmarks = triangulate(cameras);
+            map<int, Vec3d> landmarks = triangulate(cameras);
 
             int admissible_points = landmarks_in_front_of_two_cameras(cam_i, cam_j, landmarks);
             // cout << admissible_points << "\tof " << landmarks.size() << "\t|\t\t" << sol_t.transpose() << endl;
@@ -103,9 +103,9 @@ namespace pr {
     }
 
 
-    void find_correspondences(const Camera& cam_i, const Camera& cam_j, vector<cv::Vec3f>& correspondences_i, vector<cv::Vec3f>& correspondences_j) {
+    void find_correspondences(const Camera& cam_i, const Camera& cam_j, vector<cv::Vec3d>& correspondences_i, vector<cv::Vec3d>& correspondences_j) {
         int k = 0;
-        cv::Vec3f dir_vector_temp;
+        cv::Vec3d dir_vector_temp;
         for(int i = 0; i < (int)(cam_i.keypoints.size()); i++){
             for(int j = k; j < (int)(cam_j.keypoints.size()); j++) 
                 if(cam_j.keypoints[j].id == cam_i.keypoints[i].id) {
@@ -122,9 +122,9 @@ namespace pr {
     }
 
 
-    Vec3f calculate_relative_position(const Camera& cam_i, const Camera& cam_j){
-        vector<cv::Vec3f> correspondences_i;
-        vector<cv::Vec3f> correspondences_j;
+    Vec3d calculate_relative_position(const Camera& cam_i, const Camera& cam_j){
+        vector<cv::Vec3d> correspondences_i;
+        vector<cv::Vec3d> correspondences_j;
         find_correspondences(cam_i, cam_j, correspondences_i, correspondences_j);
         
         auto essential_matrix = eight_point_algorithm(correspondences_i, correspondences_j);

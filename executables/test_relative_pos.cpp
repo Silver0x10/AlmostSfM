@@ -44,7 +44,7 @@ int main (int argc, char** argv) {
             auto t_ij = calculate_relative_position(cam_i, cam_j);
 
             auto gt_t_ij =  v2tRPY(cam_i.orientation).transpose()*(cam_j.gt_position - cam_i.gt_position);
-            float scale = abs(gt_t_ij[0] / t_ij[0]);
+            double scale = abs(gt_t_ij[0] / t_ij[0]);
             auto t_ij_scaled = t_ij * scale;
             
             cout << "Cam " << i << " position: \t" << cam_i.gt_position.transpose() << endl;
@@ -55,7 +55,7 @@ int main (int argc, char** argv) {
             cout << "PR after scaling: \t" << t_ij_scaled.transpose() << endl;
             cout << "Scale: \t" << scale << endl;
 
-            float delta = 1e-03;
+            double delta = 1e-03;
             if(abs( (gt_t_ij - t_ij_scaled).norm() ) <= delta) {
                 counter_ok++;
                 cout << "OK" << endl;

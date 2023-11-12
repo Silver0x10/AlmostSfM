@@ -41,7 +41,7 @@ int main (int argc, char** argv) {
     vector<Camera> cameras = load_data(dataset_path);
     
     string gt_landmark_positions = argv[2];
-    map<int, pr::Vec3f> gt_landmarks = load_landmarks(gt_landmark_positions);
+    map<int, pr::Vec3d> gt_landmarks = load_landmarks(gt_landmark_positions);
 
     for(auto& cam: cameras) {
         cam.position = cam.gt_position;
@@ -52,10 +52,10 @@ int main (int argc, char** argv) {
         }
     }
 
-    map<int, pr::Vec3f> landmarks = triangulate(cameras);
     
     float error = rmse(landmarks, gt_landmarks);
     cout << "RMSE: " << error << endl;
+    map<int, pr::Vec3d> landmarks = triangulate(cameras);
 
     for(auto& l: landmarks) l.second = 0.985 * l.second; // just to make the visualization clearer
     visualize(landmarks, gt_landmarks);

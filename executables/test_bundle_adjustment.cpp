@@ -10,7 +10,7 @@
 using namespace std;
 using namespace pr;
 
-void visualize(const vector<Camera>& cameras, const map<int, pr::Vec3f>& landmarks, const map<int, pr::Vec3f>& gt_landmarks){
+void visualize(const vector<Camera>& cameras, const map<int, pr::Vec3d>& landmarks, const map<int, pr::Vec3d>& gt_landmarks){
     cv::viz::Viz3d window("Bundle Adjustment Visualization");
 
     // Estimated Landmarks visualization (RED)
@@ -61,7 +61,7 @@ int main (int argc, char** argv) {
 
     auto landmarks = triangulate(cameras);
     // cout << "\tRMSE: " << rmse(landmarks, gt_landmarks) << endl << endl;
-    map<int, pr::Vec3f> landmarks_original; for(auto l: landmarks) landmarks_original.insert(l);
+    map<int, pr::Vec3d> landmarks_original; for(auto l: landmarks) landmarks_original.insert(l);
     
     int ba_iterations = 2;
     bundle_adjustment(cameras, landmarks, ba_iterations);

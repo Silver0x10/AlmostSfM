@@ -15,7 +15,7 @@
 using namespace std;
 using namespace pr;
 
-void visualize(const vector<Camera>& cameras, const map<int, pr::Vec3f>& landmarks, const map<int, pr::Vec3f>& gt_landmarks){
+void visualize(const vector<Camera>& cameras, const map<int, pr::Vec3d>& landmarks, const map<int, pr::Vec3d>& gt_landmarks){
     cv::viz::Viz3d window("Map visualization");
 
     // Estimated Landmarks visualization (RED)
@@ -62,7 +62,6 @@ int main (int argc, char** argv) {
     string out_landmark_positions = output_dir + "/landmarks.txt";
 
     vector<Camera> cameras = load_data(dataset_path);
-    map<int, pr::Vec3f> gt_landmarks = load_landmarks(gt_landmark_positions);
 
     // // For testing without noise
     // for(auto& cam: cameras) {
@@ -72,6 +71,7 @@ int main (int argc, char** argv) {
     //         kp.direction_vector.normalize();
     //     }
     // }
+    map<int, pr::Vec3d> gt_landmarks = load_landmarks(gt_landmark_positions);
 
     cout << "0) Initialization...";
     init_translations(cameras);

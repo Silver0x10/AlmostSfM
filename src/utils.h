@@ -15,88 +15,88 @@ using namespace std;
 namespace pr {
   
     // typedef Eigen::Vector3f Vec3f;
-    typedef Eigen::Matrix<float, 3, 1> Vec3f;
-    typedef Eigen::Matrix<float, 4, 1> Vec4f;
-    typedef Eigen::Matrix<float, 3, 3> Matrix3f;
-    typedef Eigen::Matrix<float, 4, 4> Matrix4f;
+    typedef Eigen::Matrix<double, 3, 1> Vec3d;
+    typedef Eigen::Matrix<double, 4, 1> Vec4d;
+    typedef Eigen::Matrix<double, 3, 3> Matrix3d;
+    typedef Eigen::Matrix<double, 4, 4> Matrix4d;
 
     struct Keypoint {
         EIGEN_MAKE_ALIGNED_OPERATOR_NEW;
         int id;
-        Vec3f direction_vector;
+        Vec3d direction_vector;
 
-        Keypoint(int id, float direction_vector[3]);
+        Keypoint(int id, double direction_vector[3]);
     };
 
     struct Camera {
         EIGEN_MAKE_ALIGNED_OPERATOR_NEW;
         int id;
-        Vec3f gt_position;
-        Vec3f gt_orientation;
-        Vec3f position;
-        Vec3f orientation;
+        Vec3d gt_position;
+        Vec3d gt_orientation;
+        Vec3d position;
+        Vec3d orientation;
         vector<Keypoint> keypoints;
         
         Camera();
 
         Camera(const Camera& cam);
 
-        Camera(int id, float gt_position[3], float gt_orientation[3], float position[3], float orientation[3]);
+        Camera(int id, double gt_position[3], double gt_orientation[3], double position[3], double orientation[3]);
     };
 
     class Sim3 {
         // private:
         //     /* data */
         public:
-            float scale;
-            Vec3f rotation; 
-            Vec3f translation; 
+            double scale;
+            Vec3d rotation; 
+            Vec3d translation; 
 
             Sim3();
 
-            Sim3(float scale, Vec3f rotation, Vec3f translation);
+            Sim3(double scale, Vec3d rotation, Vec3d translation);
 
-            Vec3f operator*(Vec3f v);
+            Vec3d operator*(Vec3d v);
 
-            Matrix4f as_matrix();
+            Matrix4d as_matrix();
 
             Sim3 inverse();
 
-            void box_plus(Vec3f translation, float scale, Vec3f rotation);
+            void box_plus(Vec3d translation, double scale, Vec3d rotation);
     };
     
-    void quaternion_to_RPY(float (&orientation)[3]);
+    void quaternion_to_RPY(double (&orientation)[3]);
 
-    Matrix3f Rx(float rot_x);
-    Matrix3f Rx_prime(float rot_x);
-    Matrix3f Ry(float rot_x);
-    Matrix3f Ry_prime(float rot_x);
-    Matrix3f Rz(float rot_x);
-    Matrix3f Rz_prime(float rot_x);
-    Matrix3f v2tRPY(const Vec3f& v);
-    Vec3f tRPY2v(const Matrix3f& rot);
+    Matrix3d Rx(double rot_x);
+    Matrix3d Rx_prime(double rot_x);
+    Matrix3d Ry(double rot_x);
+    Matrix3d Ry_prime(double rot_x);
+    Matrix3d Rz(double rot_x);
+    Matrix3d Rz_prime(double rot_x);
+    Matrix3d v2tRPY(const Vec3d& v);
+    Vec3d tRPY2v(const Matrix3d& rot);
 
     vector<Camera> load_data(string dataset_path);
 
-    inline Matrix3f skew(const Vec3f& v){
-        Matrix3f S;
+    inline Matrix3d skew(const Vec3d& v){
+        Matrix3d S;
         S << 0, -v[2], v[1],
             v[2], 0, -v[0],
             -v[1], v[0], 0;
     return S;
     }
 
-    inline Vec3f skew2v(const Matrix3f& S){
-        Vec3f v;
+    inline Vec3d skew2v(const Matrix3d& S){
+        Vec3d v;
         v << S(2,1), S(0,2), S(1,0);
         return v;
     }
 
-    float rmse(const map<int, Vec3f>& landmarks, const map<int, Vec3f>& gt_landmarks);
+    double rmse(const map<int, Vec3d>& landmarks, const map<int, Vec3d>& gt_landmarks);
 
-    void save_landmarks(const map<int, pr::Vec3f>& landmarks, string output_path);
+    void save_landmarks(const map<int, pr::Vec3d>& landmarks, string output_path);
     void save_camera_positions(const vector<Camera>& cameras, string output_path);
-    map<int, pr::Vec3f> load_landmarks(string path);
+    map<int, pr::Vec3d> load_landmarks(string path);
 
 
 }
