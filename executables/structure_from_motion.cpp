@@ -62,7 +62,7 @@ int main (int argc, char** argv) {
     string out_landmark_positions = output_dir + "/landmarks.txt";
 
     vector<Camera> cameras = load_data(dataset_path);
-
+    map<int, pr::Vec3d> gt_landmarks = load_landmarks(gt_landmark_positions);
     // // For testing without noise
     // for(auto& cam: cameras) {
     //     cam.orientation = cam.gt_orientation;
@@ -71,7 +71,6 @@ int main (int argc, char** argv) {
     //         kp.direction_vector.normalize();
     //     }
     // }
-    map<int, pr::Vec3d> gt_landmarks = load_landmarks(gt_landmark_positions);
 
     cout << "0) Initialization...";
     init_translations(cameras);
@@ -86,7 +85,7 @@ int main (int argc, char** argv) {
     cout << "DONE" << endl;
 
     cout << endl << "3) Landmarks Registration... " << endl;
-    Sim3 transform = icp_3d(landmarks, gt_landmarks, 10);
+    Sim3 transform = sicp_3d(landmarks, gt_landmarks, cameras[0].gt_position, 10);
     cout << "sim3: " << endl << transform.as_matrix() << endl << endl;
     cout << "scale: " << transform.scale << "\t" << exp(transform.scale) << "\t" << log(transform.scale) << "\t" << endl;
     cout << "DONE" << endl << endl;

@@ -59,7 +59,7 @@ int main (int argc, char** argv) {
     }
 
     int icp_iterations = 5;
-    Sim3 estimated_transform = icp_3d(landmarks, gt_landmarks, icp_iterations);
+    Sim3 estimated_transform = sicp_3d(landmarks, gt_landmarks, cameras[0].gt_position, icp_iterations);
     cout << endl << "s_hat: \t" << estimated_transform.scale << " \t\t\ts_gt: \t" << exp(scale) << endl;
     cout << "R_hat: \t" << estimated_transform.rotation.transpose() << "\tR_gt: \t" << rotation.transpose() << endl;
     cout << "t_hat: \t" << estimated_transform.translation.transpose() << "\tt_gt: \t" << translation.transpose() << endl;

@@ -17,7 +17,7 @@ namespace pr {
         jacobian.block<3,3>(0, 4) = skew(-z_hat);
     }
 
-    Sim3 icp_3d(map<int, Vec3d>& landmarks, map<int, Vec3d> gt_landmarks, Vec3d gt_origin, int iterations) { // SICP
+    Sim3 sicp_3d(map<int, Vec3d>& landmarks, map<int, Vec3d> gt_landmarks, Vec3d gt_origin, int iterations) { // SICP
         Sim3 state = Sim3();
         state.translation = -gt_origin;
         // state.scale = 0.9;

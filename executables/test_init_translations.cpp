@@ -53,7 +53,7 @@ int main (int argc, char** argv) {
         cam_positions.insert({cam.id, cam.position});
         cam_gt_positions.insert({cam.id, cam.gt_position});
     }
-    auto transform = icp_3d(cam_positions, cam_gt_positions, 10);
+    auto transform = sicp_3d(cam_positions, cam_gt_positions, cameras[0].gt_position, 10);
     for(auto& cam: cameras) cam.gt_position = transform * cam.gt_position;
 
     visualize(cameras);
