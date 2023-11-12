@@ -41,7 +41,31 @@ int main (int argc, char** argv) {
             if(i == j) continue;
             auto cam_i = cameras[i];
             auto cam_j = cameras[j];
+
+            vector<cv::Vec3d> corr0;
+            vector<cv::Vec3d> corr1;
+            find_correspondences(cam_i, cam_j, corr0, corr1);
+            Essential_Matrix structE = eight_point_algorithm(corr0, corr1);
+            cout << endl << "Essential matrix: " << endl << structE.e << endl;
+            // Check epipolar constaint
+            double check = 0;
+            for(int i=0; i<(int)corr0.size(); i++) {
+                Vec3d d0; cv2eigen(corr0[i], d0);
+                Vec3d d1; cv2eigen(corr1[i], d1);
+                double err = d1.transpose() * structE.e * d0;
+                check += err*err;
+            }
+            check = sqrt(check / corr0.size());
+            cout << endl << "RMSE epipolar constaint: \t" << check << endl;
+
             auto t_ij = calculate_relative_position(cam_i, cam_j);
+
+            // cv::Mat E, R1, R2;
+            // cv::eigen2cv(structE.e, E);
+            // cv::Vec3f t;
+            // cv::decomposeEssentialMat(E, R1, R2, t);
+            // Eigen::Matrix<float, 3, 1> t_ij;
+            // cv::cv2eigen(t, t_ij);
 
             auto gt_t_ij =  v2tRPY(cam_i.orientation).transpose()*(cam_j.gt_position - cam_i.gt_position);
             double scale = abs(gt_t_ij[0] / t_ij[0]);
@@ -67,22 +91,7 @@ int main (int argc, char** argv) {
                 cout << "NOPE SADLY" << endl;
             }
 
-            vector<cv::Vec3f> corr0;
-            vector<cv::Vec3f> corr1;
-            find_correspondences(cam_i, cam_j, corr0, corr1);
-
-            Essential_Matrix structE = eight_point_algorithm(corr0, corr1);
-            cout << endl << "Essential matrix: " << endl << structE.e << endl;
-            // Check epipolar constaint
-            float check = 0;
-            for(int i=0; i<(int)corr0.size(); i++) {
-                Vec3f d0; cv2eigen(corr0[i], d0);
-                Vec3f d1; cv2eigen(corr1[i], d1);
-                float err = d1.transpose() * structE.e * d0;
-                check += err*err;
-            }
-            check = sqrt(check / corr0.size());
-            cout << endl << "RMSE epipolar constaint: \t" << check << endl;
+            
             
             cout << endl << "########################" << endl;
             counter++;
