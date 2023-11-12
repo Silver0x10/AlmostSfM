@@ -57,19 +57,29 @@ int main (int argc, char** argv) {
 
     // string gt_landmark_positions = "../../dataset_and_info/GT_landmarks.txt";
     string gt_landmark_positions = argv[2];
-    map<int, pr::Vec3f> gt_landmarks = load_landmarks(gt_landmark_positions);
+    map<int, pr::Vec3d> gt_landmarks = load_landmarks(gt_landmark_positions);
+
+    // test using gt data --> no changes
+    for(auto& c: cameras) {
+        c.position = c.gt_position;
+        // c.orientation = c.gt_orientation;
+        for(auto& kp: c.keypoints) {
+            kp.direction_vector = v2tRPY(c.orientation).transpose() * (gt_landmarks[kp.id] - c.gt_position); // gt dir vector in camera frame
+            kp.direction_vector.normalize();
+        }
+    }
 
     auto landmarks = triangulate(cameras);
     // cout << "\tRMSE: " << rmse(landmarks, gt_landmarks) << endl << endl;
     map<int, pr::Vec3d> landmarks_original; for(auto l: landmarks) landmarks_original.insert(l);
     
-    int ba_iterations = 2;
+    int ba_iterations = 5;
     bundle_adjustment(cameras, landmarks, ba_iterations);
 
     bool compare_to_GT = true;
     if (compare_to_GT) {
         int icp_iterations = 5;
-        // Sim3 estimated_transform = icp_3d(landmarks, gt_landmarks, icp_iterations);
+        // Sim3 estimated_transform = sicp_3d(landmarks, gt_landmarks, icp_iterations);
         // for(auto& gt_l: gt_landmarks) gt_l.second = estimated_transform * gt_l.second;
         // for(auto& cam: cameras) cam.gt_position = estimated_transform * cam.gt_position;
         visualize(cameras, landmarks, gt_landmarks);
