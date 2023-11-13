@@ -4,20 +4,19 @@ namespace pr {
 
     void error_and_jacobian_BA_pose_landmark(const Camera& camera, const Vec3d& keypoint_dir_vector, const Vec3d& landmark, Vec3d& error, Eigen::MatrixXd& jacobians) {
         Vec3d dir_vector_hat = v2tRPY(camera.orientation).transpose()*(landmark - camera.position);
-        // Vec3d dir_vector_hat = v2tRPY(camera.orientation) * landmark + camera.position;
-        dir_vector_hat.normalize();
+        // dir_vector_hat.normalize(); 
         error = skew(keypoint_dir_vector) * dir_vector_hat;
+
+        jacobians.block<3,3>(0, 0) = - skew(keypoint_dir_vector) * v2tRPY(camera.orientation).transpose(); // wrt the camera position
 
         auto alpha = camera.orientation[0];
         auto beta = camera.orientation[1];
         auto gamma = camera.orientation[2];
-        jacobians.block<3,1>(0, 0) = skew(keypoint_dir_vector) * (Rx_prime(alpha)*Ry(beta)*Rz(gamma)).transpose() * (landmark - camera.position); // wrt the camera orientation wrt x
-        jacobians.block<3,1>(0, 1) = skew(keypoint_dir_vector) * (Rx(alpha)*Ry_prime(beta)*Rz(gamma)).transpose() * (landmark - camera.position); // wrt the camera orientation wrt y
-        jacobians.block<3,1>(0, 2) = skew(keypoint_dir_vector) * (Rx(alpha)*Ry(beta)*Rz_prime(gamma)).transpose() * (landmark - camera.position); // wrt the camera orientation wrt z
+        jacobians.block<3,1>(0, 3) = skew(keypoint_dir_vector) * ( Rx_prime(alpha)*Ry(beta)*Rz(gamma) ).transpose() * (landmark - camera.position); // wrt the camera orientation wrt x
+        jacobians.block<3,1>(0, 4) = skew(keypoint_dir_vector) * ( Rx(alpha)*Ry_prime(beta)*Rz(gamma) ).transpose() * (landmark - camera.position); // wrt the camera orientation wrt y
+        jacobians.block<3,1>(0, 5) = skew(keypoint_dir_vector) * ( Rx(alpha)*Ry(beta)*Rz_prime(gamma) ).transpose() * (landmark - camera.position); // wrt the camera orientation wrt z
 
-        jacobians.block<3,3>(0, 3) = - skew(keypoint_dir_vector) * v2tRPY(camera.orientation).transpose(); // wrt the camera position
-
-        jacobians.block<3,3>(0, 6) = skew(keypoint_dir_vector) * v2tRPY(camera.orientation).transpose();  // wrt the landmark
+        jacobians.block<3,3>(0, 6) = skew(keypoint_dir_vector) * v2tRPY(camera.orientation).transpose();  // wrt the landmark position
     }    
     
     void bundle_adjustment(vector<Camera>& cameras, map<int, Vec3d>& landmarks, int rounds){
@@ -48,8 +47,8 @@ namespace pr {
                     double chi = error.transpose() * error;
                     chi_tot += chi;
 
-                    Matrix3d jac_cam_orientation = (Matrix3d)(jacobians.block<3,3>(0, 0));
-                    Matrix3d jac_cam_position = (Matrix3d)(jacobians.block<3,3>(0, 3));
+                    Matrix3d jac_cam_position = (Matrix3d)(jacobians.block<3,3>(0, 0));
+                    Matrix3d jac_cam_orientation = (Matrix3d)(jacobians.block<3,3>(0, 3));
                     Matrix3d jac_landmark = (Matrix3d)(jacobians.block<3,3>(0, 6));
 
                     int i_position = 3 * cam.id;
@@ -76,7 +75,7 @@ namespace pr {
             }
 
             cout << "chi_tot error: " << chi_tot << endl;
-            if(chi_tot < 1) break;
+            // if(chi_tot < 1) break;
             
             matrix_H += 0.6*Eigen::MatrixXd::Identity(3*system_size, 3*system_size);
 
@@ -93,20 +92,16 @@ namespace pr {
                 cameras[i].position += dx_i_position;
                 // orientation update
                 Vec3d dx_i_orientation = dx.block<3,1>(3*(i + cameras.size()), 0);
-                cameras[i].orientation =  tRPY2v(v2tRPY(dx_i_orientation) * v2tRPY(cameras[i].orientation));
-                // cameras[i].orientation += dx_i_orientation;
-                // for(int j=0; j<3; j++) { // wrap each orientation angle to [-pi; pi)
-                //     cameras[i].orientation[j] = atan2(sin(cameras[i].orientation[j]), cos(cameras[i].orientation[j]));
-                // }
+                cameras[i].orientation =  tRPY2v( v2tRPY(dx_i_orientation) * v2tRPY(cameras[i].orientation) );
             }
             // State perturbation (landmarks):
-            for(int j=2*cameras.size(); j < system_size; j++) {
+            for(int j=2*cameras.size(); j < (int)system_size; j++) {
                 Vec3d dx_j = dx.block<3,1>(3*j, 0);
-                landmarks[landmark_index2id[j-2*cameras.size()]] += dx_j;
+                int l_index = j-2*cameras.size();
+                landmarks[landmark_index2id[l_index]] += dx_j;
             }
 
         }
-        
     }
 
 }
