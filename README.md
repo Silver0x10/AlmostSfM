@@ -89,15 +89,17 @@ In the *out* directory it's possible to find the output produced by the followin
   <img src="out/icp_test_terminal.png" width="70%"/>
 </div>
   
-- [X] triangulation (```build/executables/test_triangulation <Dataset Path> <GT Landmarks Path>```)
+- [ ] triangulation (```build/executables/test_triangulation <Dataset Path> <GT Landmarks Path>```) --> **ok BUT not robust to outliers**
 <div align="center"> <img src="out/triangulation_test_visualization.png" width="70%"/> </div>
 
-- [ ] calculate_relative_position (```build/executables/test_relative_pos <Dataset Path> <GT Landmarks Path>```)
+- [X] calculate_relative_position (```build/executables/test_relative_pos <Dataset Path> <GT Landmarks Path>```)
   - [X] eight_point_algorithm
   - [X] extract_t
 <div align="center"> <img src="out/relative_position_test_terminal.png" width="70%"/> </div>
 
-- [X] init_translations (```build/executables/test_init_t <Dataset Path> <GT Landmarks Path>```) --> **doesn't works using calculate_relative_position funciton**. For the moment i'm using the relative position calculated from GT positions. 
+- [X] init_translations (```build/executables/test_init_t <Dataset Path> <GT Landmarks Path>```) --> **doesn't works using noisy direction vectors (crucial for triangulation)**. For the moment i'm using the direction vectors calculated from GT positions. 
 <div align="center"> <img src="out/init_translations_test_visualization.png" width="70%"/> </div>
 
-- [ ] bundle_adjustment (```build/executables/test_BA <Dataset Path> <GT Landmarks Path>```)
+- [X] bundle_adjustment (```build/executables/test_BA <Dataset Path> <GT Landmarks Path>```)
+<div align="center"> <img src="out/BA_test_visualization.png" width="70%"/> </div>
+

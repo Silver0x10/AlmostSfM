@@ -44,9 +44,16 @@ int main (int argc, char** argv) {
     string gt_landmark_positions = argv[2]; // "./dataset_and_info/GT_landmarks.txt";
     map<int, pr::Vec3d> gt_landmarks = load_landmarks(gt_landmark_positions);
 
+    for(auto& cam: cameras) {
+        for(auto& kp: cam.keypoints) {
+            kp.direction_vector = v2tRPY(cam.orientation).transpose() * (gt_landmarks[kp.id] - cam.gt_position); // gt dir vector in camera frame
+            kp.direction_vector.normalize();
+        }
+    }
+
     init_translations(cameras);
     
-    cout << endl << "Doing ICP for camera positions..." << endl;
+    cout << endl << "Doing SICP for camera positions..." << endl;
     map<int, Vec3d> cam_positions;
     map<int, Vec3d> cam_gt_positions;
     for(const auto& cam: cameras) {
