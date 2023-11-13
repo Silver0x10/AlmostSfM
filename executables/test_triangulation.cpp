@@ -60,24 +60,22 @@ int main (int argc, char** argv) {
     map<int, pr::Vec3d> gt_landmarks = load_landmarks(gt_landmark_positions);
 
     for(auto& cam: cameras) {
-        cout << "##############################################################################" << endl;
+        // cout << "##############################################################################" << endl;
         cam.position = cam.gt_position;
         cam.orientation = cam.gt_orientation;
-        cout << "id: " << cam.id << endl;
-        cout << "pos: " << cam.position.transpose() << endl << endl;
+        // cout << "id: " << cam.id << endl;
+        // cout << "pos: " << cam.position.transpose() << endl << endl;
 
         for(auto& kp: cam.keypoints) {
-            cout << kp.id << ": \t" << (v2tRPY(cam.orientation).transpose() * gt_landmarks[kp.id]).transpose() << endl;
-            cout << "dir: " << kp.direction_vector.transpose() << endl;
+            // cout << kp.id << ": \t" << (v2tRPY(cam.orientation).transpose() * gt_landmarks[kp.id]).transpose() << endl;
+            // cout << "dir: " << kp.direction_vector.transpose() << endl;
             kp.direction_vector = v2tRPY(cam.orientation).transpose() * (gt_landmarks[kp.id] - cam.position); // gt dir vector in camera frame
             kp.direction_vector.normalize();
-            cout << "gtd: " << kp.direction_vector.transpose() << endl << endl;
+            // cout << "gtd: " << kp.direction_vector.transpose() << endl << endl;
         }
     }
 
     
-    float error = rmse(landmarks, gt_landmarks);
-    cout << "RMSE: " << error << endl;
     map<int, pr::Vec3d> landmarks = triangulate(cameras);
     // vector<Camera> cams;
     // cams.push_back(cameras[42]);
@@ -87,9 +85,8 @@ int main (int argc, char** argv) {
     // map<int, pr::Vec3d> gt_lands;
     // for(auto l: landmarks) gt_lands.insert({l.first, gt_landmarks[l.first]});
 
-
-    // double error = rmse(landmarks, gt_landmarks);
-    // cout << "RMSE: " << error << endl;
+    double error = rmse(landmarks, gt_landmarks);
+    cout << "RMSE: " << error << endl;
 
     for(auto& l: landmarks) l.second = 0.985 * l.second; // just to make the visualization clearer
     visualize(cameras, cameras, landmarks, gt_landmarks);
