@@ -54,23 +54,28 @@ void visualize(const vector<Camera>& cameras, const map<int, pr::Vec3d>& landmar
 }
 
 int main (int argc, char** argv) {
-    string dataset_path = argv[1]; // "../../dataset_and_info/dataset.txt";
-    string gt_landmark_positions = argv[2]; // "../../dataset_and_info/GT_landmarks.txt";
-    string output_dir = argv[3]; // out_landmark_positions.substr(0, out_camera_positions.rfind('/'));
-    int ba_rounds = stoi(argv[4]);
+    // string dataset_path = argv[1]; // "../../dataset_and_info/dataset.txt";
+    string dataset_path = "../../dataset_and_info/dataset.txt";
+    // string gt_landmark_positions = argv[2]; // "../../dataset_and_info/GT_landmarks.txt";
+    string gt_landmark_positions = "../../dataset_and_info/GT_landmarks.txt";
+    // string output_dir = argv[3]; // out_landmark_positions.substr(0, out_camera_positions.rfind('/'));
+    string output_dir = "../../out/";
+    int ba_rounds = 5;
+    // int ba_rounds = stoi(argv[4]);
     string out_camera_positions = output_dir + "/cameras.txt";
     string out_landmark_positions = output_dir + "/landmarks.txt";
 
     vector<Camera> cameras = load_data(dataset_path);
     map<int, pr::Vec3d> gt_landmarks = load_landmarks(gt_landmark_positions);
-    // // For testing without noise
-    // for(auto& cam: cameras) {
-    //     cam.orientation = cam.gt_orientation;
-    //     for(auto& kp: cam.keypoints) {
-    //         kp.direction_vector = v2tRPY(cam.orientation).transpose() * (gt_landmarks[kp.id] - cam.gt_position); // gt dir vector in camera frame
-    //         kp.direction_vector.normalize();
-    //     }
-    // }
+    
+    // For testing without noise
+    for(auto& cam: cameras) {
+        // cam.orientation = cam.gt_orientation;
+        for(auto& kp: cam.keypoints) {
+            kp.direction_vector = v2tRPY(cam.orientation).transpose() * (gt_landmarks[kp.id] - cam.gt_position); // gt dir vector in camera frame
+            kp.direction_vector.normalize();
+        }
+    }
 
     cout << "0) Initialization...";
     init_translations(cameras);

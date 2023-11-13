@@ -56,7 +56,7 @@ At the end a window like that in the above image should appear, showing:
 
 <br/> 
 
-**NOTE:** wrong **positions initialization** using relative pose estimate. The visualization above was produced using GT relative poses.
+**NOTE:** wrong **positions initialization** using original direction vectors. The visualization above was produced using GT direction vectors.
 
 
 # **Hot to Run**
