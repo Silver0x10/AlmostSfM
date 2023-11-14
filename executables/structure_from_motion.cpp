@@ -99,9 +99,26 @@ int main (int argc, char** argv) {
     cout << "DONE" << endl;
 
     cout << endl << "3) Landmarks Registration... " << endl;
-    Sim3 transform = sicp_3d(landmarks, gt_landmarks, cameras[0].gt_position, 10);
+    double scaling = 10;
+    map<int, pr::Vec3d> positions;
+    map<int, pr::Vec3d> gt_positions;
+    for(auto& cam: cameras) {
+        cam.position *= scaling;
+        cam.gt_position *= scaling;
+        positions.insert({cam.id, cam.position});
+        gt_positions.insert({cam.id, cam.gt_position});
+    }
+    for(auto& gt_l: gt_landmarks) {
+        gt_l.second *= scaling;
+        gt_positions.insert(gt_l);
+    }
+    for(auto& l: landmarks) {
+        l.second *= scaling;
+        positions.insert(l); 
+    }
+    Sim3 transform = sicp_3d(positions, gt_positions, cameras[0].gt_position, 10);
+    // Sim3 transform = sicp_3d(landmarks, gt_landmarks, cameras[0].gt_position, 10);
     cout << "sim3: " << endl << transform.as_matrix() << endl << endl;
-    cout << "scale: " << transform.scale << "\t" << exp(transform.scale) << "\t" << log(transform.scale) << "\t" << endl;
     cout << "DONE" << endl << endl;
 
     // Save cameras and landmarks data
