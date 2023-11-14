@@ -18,7 +18,7 @@ int main (int argc, char** argv) {
     vector<Camera> cameras = load_data(dataset_path);
     string gt_landmark_positions = argv[2]; // "../../dataset_and_info/GT_landmarks.txt";
     // string gt_landmark_positions = "../../dataset_and_info/GT_landmarks.txt";
-    map<int, pr::Vec3f> gt_landmarks = load_landmarks(gt_landmark_positions);
+    map<int, pr::Vec3d> gt_landmarks = load_landmarks(gt_landmark_positions);
     
     for(auto& cam: cameras) {
         cam.orientation = cam.gt_orientation;
@@ -100,7 +100,7 @@ int main (int argc, char** argv) {
 
     cout << endl << "CORRECT relative position estimations: \t" << counter_ok << "/" << counter << endl;
     cout << "OPPOSITE relative position estimations: \t" << counter_neg << "/" << counter << endl;
-    // cout << "WRONG relative position estimations: \t" << counter_wrong << "/" << counter << endl;
+    cout << "WRONG relative position estimations: \t" << counter_wrong << "/" << counter << endl;
     
     return 0;
 }

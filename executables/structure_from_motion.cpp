@@ -75,6 +75,15 @@ int main (int argc, char** argv) {
             kp.direction_vector = v2tRPY(cam.orientation).transpose() * (gt_landmarks[kp.id] - cam.gt_position); // gt dir vector in camera frame
             kp.direction_vector.normalize();
         }
+        // vector<Keypoint> good_keypoints;
+        // for(auto& kp: cam.keypoints) {
+        //     Vec3d dir = v2tRPY(cam.orientation).transpose() * (gt_landmarks[kp.id] - cam.gt_position); // gt dir vector in camera frame
+        //     dir.normalize();
+        //     double error = (skew(dir) * kp.direction_vector).transpose() * (skew(dir) * kp.direction_vector);
+        //     // cout << kp.id << ": " << error << endl;
+        //     if(error < 0.9) good_keypoints.push_back(kp);
+        // }
+        // cam.keypoints = good_keypoints;
     }
 
     cout << "0) Initialization...";
