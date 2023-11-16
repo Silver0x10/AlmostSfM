@@ -109,10 +109,11 @@ namespace pr {
 
 
     void find_correspondences(const Camera& cam_i, const Camera& cam_j, vector<cv::Vec3d>& correspondences_i, vector<cv::Vec3d>& correspondences_j) {
-        int k = 0;
+        // int k = 0;
         cv::Vec3d dir_vector_temp;
         for(int i = 0; i < (int)(cam_i.keypoints.size()); i++){
-            for(int j = k; j < (int)(cam_j.keypoints.size()); j++) 
+            for(int j = 0; j < (int)(cam_j.keypoints.size()); j++) 
+            // for(int j = k; j < (int)(cam_j.keypoints.size()); j++) 
                 if(cam_j.keypoints[j].id == cam_i.keypoints[i].id) {
                     eigen2cv(cam_i.keypoints[i].direction_vector, dir_vector_temp);
                     correspondences_i.push_back(dir_vector_temp);
@@ -120,7 +121,7 @@ namespace pr {
                     eigen2cv(cam_j.keypoints[j].direction_vector, dir_vector_temp);
                     correspondences_j.push_back(dir_vector_temp);
 
-                    k = j+1;
+                    // k = j+1;
                 }
         }
         // cout << "correspondences: " << correspondences_i.size() <<  endl;
@@ -131,10 +132,15 @@ namespace pr {
         vector<cv::Vec3d> correspondences_i;
         vector<cv::Vec3d> correspondences_j;
         find_correspondences(cam_i, cam_j, correspondences_i, correspondences_j);
+        if(correspondences_i.size() < 8) {
+            Vec3d t_ij;
+            t_ij.setZero();
+            return t_ij;
+        }
         
         auto essential_matrix = eight_point_algorithm(correspondences_i, correspondences_j);
         
-        auto t_ij = extract_t(cam_i, cam_j, essential_matrix);
+        Vec3d t_ij = extract_t(cam_i, cam_j, essential_matrix);
         // cv::Mat E, R1, R2;
         // cv::eigen2cv(essential_matrix.e, E);
         // cv::Vec3d t;

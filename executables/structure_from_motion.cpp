@@ -60,7 +60,7 @@ int main (int argc, char** argv) {
     string gt_landmark_positions = "../../dataset_and_info/GT_landmarks.txt";
     // string output_dir = argv[3]; // out_landmark_positions.substr(0, out_camera_positions.rfind('/'));
     string output_dir = "../../out/";
-    int ba_rounds = 5;
+    int ba_rounds = 0;
     // int ba_rounds = stoi(argv[4]);
     string out_camera_positions = output_dir + "/cameras.txt";
     string out_landmark_positions = output_dir + "/landmarks.txt";
@@ -68,23 +68,29 @@ int main (int argc, char** argv) {
     vector<Camera> cameras = load_data(dataset_path);
     map<int, pr::Vec3d> gt_landmarks = load_landmarks(gt_landmark_positions);
     
-    // For testing without noise
-    for(auto& cam: cameras) {
-        // cam.orientation = cam.gt_orientation;
-        for(auto& kp: cam.keypoints) {
-            kp.direction_vector = v2tRPY(cam.orientation).transpose() * (gt_landmarks[kp.id] - cam.gt_position); // gt dir vector in camera frame
-            kp.direction_vector.normalize();
-        }
-        // vector<Keypoint> good_keypoints;
-        // for(auto& kp: cam.keypoints) {
-        //     Vec3d dir = v2tRPY(cam.orientation).transpose() * (gt_landmarks[kp.id] - cam.gt_position); // gt dir vector in camera frame
-        //     dir.normalize();
-        //     double error = (skew(dir) * kp.direction_vector).transpose() * (skew(dir) * kp.direction_vector);
-        //     // cout << kp.id << ": " << error << endl;
-        //     if(error < 0.9) good_keypoints.push_back(kp);
-        // }
-        // cam.keypoints = good_keypoints;
-    }
+    // // For testing without noise
+    // for(auto& cam: cameras) {
+    //     // cam.orientation = cam.gt_orientation;
+    //     for(auto& kp: cam.keypoints) {
+    //         kp.direction_vector = v2tRPY(cam.orientation).transpose() * (gt_landmarks[kp.id] - cam.gt_position); // gt dir vector in camera frame
+    //         kp.direction_vector.normalize();
+    //     }
+    // }
+
+    // // For testing without outliers
+    // for(auto& cam: cameras) {
+    //     for (auto it = cam.keypoints.begin(); it != cam.keypoints.end(); ) {
+    //         Vec3d dir = v2tRPY(cam.orientation).transpose() * (gt_landmarks[it->id] - cam.gt_position); // gt dir vector in camera frame
+    //         dir.normalize();
+    //         double error = (skew(dir) * it->direction_vector).transpose() * (skew(dir) * it->direction_vector);
+    //         if (error > 0.9) {
+    //             it = cam.keypoints.erase(it); // elimina l'elemento e restituisce un iteratore successivo
+    //             cout << cam.id << " -> kp: " << it->id << endl;
+    //         } else {
+    //             ++it; // passa all'elemento successivo
+    //         }
+    //     }
+    // }
 
     cout << "0) Initialization...";
     init_translations(cameras);
