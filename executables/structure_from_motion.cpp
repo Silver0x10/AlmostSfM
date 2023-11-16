@@ -72,8 +72,10 @@ int main (int argc, char** argv) {
     // for(auto& cam: cameras) {
     //     // cam.orientation = cam.gt_orientation;
     //     for(auto& kp: cam.keypoints) {
-    //         kp.direction_vector = v2tRPY(cam.orientation).transpose() * (gt_landmarks[kp.id] - cam.gt_position); // gt dir vector in camera frame
-    //         kp.direction_vector.normalize();
+    //         Vec3d dir = v2tRPY(cam.orientation).transpose() * (gt_landmarks[kp.id] - cam.gt_position); // gt dir vector in camera frame
+    //         dir.normalize();
+    //         double error = (skew(dir) * kp.direction_vector).transpose() * (skew(dir) * kp.direction_vector);
+    //         if (error > 0.2) kp.direction_vector = dir;
     //     }
     // }
 

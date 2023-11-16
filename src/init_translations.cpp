@@ -32,8 +32,8 @@ namespace pr {
                 
                 Eigen::MatrixXd jacobians(3, 6);
                 error_and_jacobian_translation(t_ij, rot_i, jacobians);
-                Matrix3d jac_t_i = (i!=0) ? (Matrix3d)(jacobians.block<3,3>(0, 0)) : Eigen::Matrix3d::Zero();
-                Matrix3d jac_t_j = (j!=0) ? (Matrix3d)(jacobians.block<3,3>(0, 3)) : Eigen::Matrix3d::Zero(); 
+                Matrix3d jac_t_i = (Matrix3d)(jacobians.block<3,3>(0, 0));
+                Matrix3d jac_t_j = (Matrix3d)(jacobians.block<3,3>(0, 3)); 
                 
                 // H += jacobian.transpose()*jacobian;
                 if(i>0) matrix_H.block<3,3>(3*(i-1), 3*(i-1)) += jac_t_i.transpose()*jac_t_i;

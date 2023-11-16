@@ -132,7 +132,7 @@ namespace pr {
         vector<cv::Vec3d> correspondences_i;
         vector<cv::Vec3d> correspondences_j;
         find_correspondences(cam_i, cam_j, correspondences_i, correspondences_j);
-        if(correspondences_i.size() < 8) {
+        if(correspondences_i.size() < 16) {
             Vec3d t_ij;
             t_ij.setZero();
             return t_ij;
