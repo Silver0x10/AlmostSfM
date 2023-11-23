@@ -46,26 +46,5 @@ namespace pr {
 
         return landmarks;
     }
-
-    // map<int, Vec3f> triangulate(const Camera& cam_i, const Camera& cam_j) {
-    //     map<int, Vec3f> cam_j_keypoints;
-    //     for(const Keypoint& kp: cam_j.keypoints) cam_j_keypoints.insert({kp.id, kp.direction_vector});
-
-    //     map<int, Vec3f> landmarks;
-    //     for(const Keypoint& kp: cam_i.keypoints) {
-    //         if(cam_j_keypoints.find(kp.id) == cam_j_keypoints.end()) continue;
-            
-    //         Matrix3d matrix_H = Matrix3d::Identity() - kp.direction_vector*kp.direction_vector.transpose();
-    //         matrix_H += Matrix3d::Identity() - cam_j_keypoints[kp.id]*cam_j_keypoints[kp.id].transpose();
-    //         Vec3f b = ( Matrix3d::Identity() - kp.direction_vector*kp.direction_vector.transpose() ) * cam_i.position;
-    //         b += ( Matrix3d::Identity() - cam_j_keypoints[kp.id]*cam_j_keypoints[kp.id].transpose() ) * cam_j.position;
-
-    //         Vec3f landmark_position = matrix_H.completeOrthogonalDecomposition().pseudoInverse() * b;
-
-    //         landmarks.insert({kp.id, landmark_position});
-    //     }
-
-    //     return landmarks;
-    // }
     
 }

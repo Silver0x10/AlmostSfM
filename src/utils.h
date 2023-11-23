@@ -26,6 +26,7 @@ namespace pr {
         Vec3d direction_vector;
 
         Keypoint(int id, double direction_vector[3]);
+        Keypoint(int id, Vec3d direction_vector);
     };
 
     struct Camera {

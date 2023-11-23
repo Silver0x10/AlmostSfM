@@ -89,7 +89,8 @@ In the *out* directory it's possible to find the output produced by the followin
   <img src="out/icp_test_terminal.png" width="70%"/>
 </div>
   
-- [ ] triangulation (```build/executables/test_triangulation <Dataset Path> <GT Landmarks Path>```) --> **ok BUT not robust to outliers**
+- [ ] triangulation (```build/executables/test_triangulation```) --> **ok BUT not robust to outliers**
+<div align="center"> <img src="out/triangulation_test_visualization_simple.png" width="70%"/> </div>
 <div align="center"> <img src="out/triangulation_test_visualization.png" width="70%"/> </div>
 
 - [X] calculate_relative_position (```build/executables/test_relative_pos <Dataset Path> <GT Landmarks Path>```)

@@ -33,6 +33,11 @@ namespace pr {
         this->direction_vector = Eigen::Map<Vec3d>(direction_vector, 3, 1);
     }
 
+    Keypoint::Keypoint(int id, Vec3d direction_vector) {
+        this->id = id;
+        this->direction_vector = direction_vector;
+    }
+
     /* Given the imaginery part of a unit quaternion, reconstructs the whole quaternion and transforms it 
         in an Euler angles representation (Roll-Pitch-Yaw) .
     */
