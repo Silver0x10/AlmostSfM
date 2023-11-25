@@ -109,7 +109,6 @@ namespace pr {
     void find_correspondences(const Camera& cam_i, const Camera& cam_j, map<int, cv::Vec3d>& correspondences_i, map<int, cv::Vec3d>& correspondences_j) {
         for(int i = 0; i < (int)(cam_i.keypoints.size()); i++){
             for(int j = 0; j < (int)(cam_j.keypoints.size()); j++) 
-            // for(int j = k; j < (int)(cam_j.keypoints.size()); j++) 
                 if(cam_j.keypoints[j].id == cam_i.keypoints[i].id) {
                     cv::Vec3d dir_vector_i;
                     eigen2cv(cam_i.keypoints[i].direction_vector, dir_vector_i);

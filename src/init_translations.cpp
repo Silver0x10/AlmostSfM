@@ -1,6 +1,6 @@
 // #pragma once
 #include "init_translations.h"
-
+#include <assert.h> 
 
 namespace pr {
 
@@ -16,18 +16,17 @@ namespace pr {
 
 
     void init_translations(vector<Camera>& cameras) {
-        int system_size = cameras.size() - 1;
-        Eigen::MatrixXd matrix_H(3*system_size, 3*system_size);
+        int system_size = 3*(cameras.size() - 1);
+        Eigen::MatrixXd matrix_H(system_size, system_size);
         matrix_H.setZero();
         
         for(int i=0; i<(int)(cameras.size()); ++i){
-            for(int j=0; j<(int)(cameras.size()); ++j){
-                if((i == 0 and j == 0) or i == j) continue;
+            for(int j=i+1; j<(int)(cameras.size()); ++j){
 
                 // Vec3d t_ij = v2tRPY(cameras[i].orientation).transpose() * ((cameras[j].gt_position - cameras[i].gt_position)); // GT for checking correctness
                 Vec3d t_ij = calculate_relative_position(cameras[i], cameras[j]);
                 if(t_ij.norm() == 0) continue;
-                
+
                 const auto& rot_i = v2tRPY(cameras[i].orientation);
                 
                 Eigen::MatrixXd jacobians(3, 6);
