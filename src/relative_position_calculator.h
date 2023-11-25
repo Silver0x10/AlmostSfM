@@ -26,7 +26,7 @@ namespace pr {
 
     Vec3d extract_t(Camera cam_i, Camera cam_j, const Essential_Matrix& e);
 
-    void find_correspondences(const Camera& cam_i, const Camera& cam_j, vector<cv::Vec3d>& correspondences_i, vector<cv::Vec3d>& correspondences_j);
+    void find_correspondences(const Camera& cam_i, const Camera& cam_j, map<int, cv::Vec3d>& correspondences_i, map<int, cv::Vec3d>& correspondences_j);
 
     Vec3d calculate_relative_position(const Camera& cam_i, const Camera& cam_j);
     

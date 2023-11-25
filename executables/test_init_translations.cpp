@@ -39,9 +39,9 @@ void visualize(const vector<Camera>& cameras){
 int main (int argc, char** argv) {
     cout << "Test Translations Initialization:" << endl;
 
-    string dataset_path = argv[1]; // "./dataset_and_info/dataset.txt";
+    string dataset_path = argv[1]; // "../../dataset_and_info/dataset.txt";
     vector<Camera> cameras = load_data(dataset_path);
-    string gt_landmark_positions = argv[2]; // "./dataset_and_info/GT_landmarks.txt";
+    string gt_landmark_positions = argv[2]; // "../../dataset_and_info/GT_landmarks.txt";
     map<int, pr::Vec3d> gt_landmarks = load_landmarks(gt_landmark_positions);
 
     for(auto& cam: cameras) {
@@ -52,7 +52,6 @@ int main (int argc, char** argv) {
     }
 
     init_translations(cameras);
-    
     cout << endl << "Doing SICP for camera positions..." << endl;
     map<int, Vec3d> cam_positions;
     map<int, Vec3d> cam_gt_positions;

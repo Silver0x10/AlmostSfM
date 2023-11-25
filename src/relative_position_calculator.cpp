@@ -3,10 +3,8 @@
 
 namespace pr {
 
+    // Not working :(
     Essential_Matrix eight_point_algorithm(vector<cv::Vec3d>& dir_vectors_i, vector<cv::Vec3d>& dir_vectors_j){
-
-        // cv::normalize(dir_vectors_i, dir_vectors_i);
-        // cv::normalize(dir_vectors_j, dir_vectors_j);
 
         cv::Mat A(dir_vectors_i.size(), 9, CV_64F);
         for (size_t i = 0; i < dir_vectors_i.size(); ++i) {
@@ -108,46 +106,67 @@ namespace pr {
     }
 
 
-    void find_correspondences(const Camera& cam_i, const Camera& cam_j, vector<cv::Vec3d>& correspondences_i, vector<cv::Vec3d>& correspondences_j) {
-        // int k = 0;
-        cv::Vec3d dir_vector_temp;
+    void find_correspondences(const Camera& cam_i, const Camera& cam_j, map<int, cv::Vec3d>& correspondences_i, map<int, cv::Vec3d>& correspondences_j) {
         for(int i = 0; i < (int)(cam_i.keypoints.size()); i++){
             for(int j = 0; j < (int)(cam_j.keypoints.size()); j++) 
             // for(int j = k; j < (int)(cam_j.keypoints.size()); j++) 
                 if(cam_j.keypoints[j].id == cam_i.keypoints[i].id) {
-                    eigen2cv(cam_i.keypoints[i].direction_vector, dir_vector_temp);
-                    correspondences_i.push_back(dir_vector_temp);
+                    cv::Vec3d dir_vector_i;
+                    eigen2cv(cam_i.keypoints[i].direction_vector, dir_vector_i);
+                    correspondences_i.insert({cam_i.keypoints[i].id, dir_vector_i});
 
-                    eigen2cv(cam_j.keypoints[j].direction_vector, dir_vector_temp);
-                    correspondences_j.push_back(dir_vector_temp);
-
-                    // k = j+1;
+                    cv::Vec3d dir_vector_j;
+                    eigen2cv(cam_j.keypoints[j].direction_vector, dir_vector_j);
+                    correspondences_j.insert({cam_j.keypoints[j].id, dir_vector_j});
                 }
         }
-        // cout << "correspondences: " << correspondences_i.size() <<  endl;
     }
 
-
     Vec3d calculate_relative_position(const Camera& cam_i, const Camera& cam_j){
-        vector<cv::Vec3d> correspondences_i;
-        vector<cv::Vec3d> correspondences_j;
+        Vec3d t_ij;
+
+        map<int, cv::Vec3d> correspondences_i;
+        map<int, cv::Vec3d> correspondences_j;
         find_correspondences(cam_i, cam_j, correspondences_i, correspondences_j);
-        if(correspondences_i.size() < 16) {
-            Vec3d t_ij;
+        if(correspondences_i.size() < 34) {
             t_ij.setZero();
             return t_ij;
         }
-        
-        auto essential_matrix = eight_point_algorithm(correspondences_i, correspondences_j);
-        
-        Vec3d t_ij = extract_t(cam_i, cam_j, essential_matrix);
-        // cv::Mat E, R1, R2;
+
+        // // Not Working
+        // vector<cv::Vec3d> correspondences_i_as_vector;
+        // vector<cv::Vec3d> correspondences_j_as_vector;
+        // for(auto corr_i: correspondences_i){
+        //     correspondences_i_as_vector.push_back(corr_i.second);
+        //     correspondences_j_as_vector.push_back(correspondences_j[corr_i.first]);
+        // }
+        // auto essential_matrix = eight_point_algorithm(correspondences_i_as_vector, correspondences_j_as_vector);
+        // cv::Mat E;
         // cv::eigen2cv(essential_matrix.e, E);
-        // cv::Vec3d t;
-        // cv::decomposeEssentialMat(E, R1, R2, t);
-        // Vec3d t_ij;
-        // cv::cv2eigen(t, t_ij);
-                
+        
+        vector<cv::Point2d> correspondences_i_2d;
+        vector<cv::Point2d> correspondences_j_2d;
+        for(auto c: correspondences_i){
+            correspondences_i_2d.emplace_back(c.second[0]/c.second[2], c.second[1]/c.second[2]);
+            correspondences_j_2d.emplace_back(correspondences_j[c.first][0]/correspondences_j[c.first][2], correspondences_j[c.first][1]/correspondences_j[c.first][2]);
+        }
+        cv::Mat E = cv::findEssentialMat(correspondences_j_2d, correspondences_i_2d);
+        
+        // // Not working neither :(
+        // Essential_Matrix essential_matrix;
+        // cv::cv2eigen(E, essential_matrix.e);
+        // cv::Mat u, s, vt;
+        // cv::SVD::compute(E, s, u, vt);
+        // cv::cv2eigen(u, essential_matrix.u);
+        // cv::cv2eigen(cv::Mat::diag(s), essential_matrix.s);
+        // cv::cv2eigen(vt, essential_matrix.vt);
+        // t_ij = extract_t(cam_i, cam_j, essential_matrix);
+
+        cv::Mat R1, R2;
+        cv::Vec3d t;
+        cv::decomposeEssentialMat(E, R1, R2, t);
+        cv::cv2eigen(t, t_ij);
+
         return t_ij;
     }
 
