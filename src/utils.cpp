@@ -45,7 +45,7 @@ namespace pr {
         double qw, qx = orientation[0], qy = orientation[1], qz = orientation[2];
 
         // Implementation adapted from: see README_SFM1B.md
-        double norm = sqrt(pow(qx, 2) + pow(qy, 2) + pow(qz, 2));
+        double norm = pow(qx, 2) + pow(qy, 2) + pow(qz, 2);
         if(norm > 1) qw = 1, qx = qy = qz = 0;
         else qw = sqrt(1. - norm);
         // ------ end adapted implementation ------ 
@@ -67,7 +67,15 @@ namespace pr {
         orientation[2] = atan2(siny_cosp, cosy_cosp);
         // ------ end adapted implementation ------ 
 
-        for(auto& o: orientation) o = round(o * 100000.0) / 100000.0;
+        // for(auto& o: orientation) o = round(o * 100000.0) / 100000.0;
+    }
+
+    Vec3d RPY_to_quaternion(Vec3d rpy) {
+        Eigen::Quaterniond quat;
+        quat = Eigen::AngleAxisd(rpy[0], Eigen::Vector3d::UnitX())
+                        * Eigen::AngleAxisd(rpy[1], Eigen::Vector3d::UnitY())
+                        * Eigen::AngleAxisd(rpy[2], Eigen::Vector3d::UnitZ());
+        return Vec3d(quat.x(), quat.y(), quat.z());
     }
 
     // Implementation adapted from: https://gitlab.com/grisetti/probabilistic_robotics_2022_23/-/blob/main/source/cpp/24_projective_icp/src/defs.h
@@ -133,7 +141,8 @@ namespace pr {
     }
 
     Matrix3d v2tRPY(const Vec3d& v){
-        Matrix3d T = Rx(v[0])*Ry(v[1])*Rz(v[2]);
+        Matrix3d T = Rz(v[2])*Ry(v[1])*Rx(v[0]);
+        // Matrix3d T = Rx(v[0])*Ry(v[1])*Rz(v[2]);
         return T;
     }
 
@@ -184,8 +193,6 @@ namespace pr {
                 
                 double direction_vector[3];
                 for(int i=0; i<3; ++i) line_stream >> direction_vector[i];
-
-                // quaternion_to_RPY(direction_vector); // TODO: check
 
                 Keypoint kp(id, direction_vector);
                 current_cam->keypoints.push_back(kp);

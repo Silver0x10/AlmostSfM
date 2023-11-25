@@ -1,4 +1,8 @@
 
+add_executable(test_data_loading test_data_loading.cpp
+    ../src/utils.cpp
+)
+
 add_executable(test_icp_3d test_icp_3d.cpp
     ../src/utils.cpp
     ../src/icp_3d.cpp

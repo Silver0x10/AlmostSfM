@@ -67,6 +67,7 @@ namespace pr {
     };
     
     void quaternion_to_RPY(double (&orientation)[3]);
+    Vec3d RPY_to_quaternion(Vec3d rpy);
 
     Matrix3d Rx(double rot_x);
     Matrix3d Rx_prime(double rot_x);
