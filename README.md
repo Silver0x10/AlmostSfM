@@ -89,7 +89,7 @@ In the *out* directory it's possible to find the output produced by the followin
   <img src="out/icp_test_terminal.png" width="70%"/>
 </div>
   
-- [ ] triangulation (```build/executables/test_triangulation```) --> **ok BUT not robust to outliers**
+- [X] triangulation (```build/executables/test_triangulation```) --> **ok BUT not robust to outliers**
 <div align="center"> <img src="out/triangulation_test_visualization_simple.png" width="70%"/> </div>
 <div align="center"> <img src="out/triangulation_test_visualization.png" width="70%"/> </div>
 
@@ -98,9 +98,9 @@ In the *out* directory it's possible to find the output produced by the followin
   - [X] extract_t
 <div align="center"> <img src="out/relative_position_test_terminal.png" width="70%"/> </div>
 
-- [X] init_translations (```build/executables/test_init_t <Dataset Path> <GT Landmarks Path>```) --> **doesn't works using noisy direction vectors (crucial for triangulation)**. For the moment i'm using the direction vectors calculated from GT positions. 
+- [X] init_translations (```build/executables/test_init_t <Dataset Path> <GT Landmarks Path>```)
 <div align="center"> <img src="out/init_translations_test_visualization.png" width="70%"/> </div>
 
-- [X] bundle_adjustment (```build/executables/test_BA <Dataset Path> <GT Landmarks Path>```)
+- [ ] bundle_adjustment (```build/executables/test_BA <Dataset Path> <GT Landmarks Path>```)
 <div align="center"> <img src="out/BA_test_visualization.png" width="70%"/> </div>
 
