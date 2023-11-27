@@ -15,6 +15,36 @@
 using namespace std;
 using namespace pr;
 
+void keyboardCallback(const cv::viz::KeyboardEvent& event, void* data) {
+    if (event.action == cv::viz::KeyboardEvent::KEY_DOWN) {
+        if (event.code == 'g') {
+            cv::viz::Viz3d* window = static_cast<cv::viz::Viz3d*>(data);
+            double current = window->getWidget("cameras").getRenderingProperty(cv::viz::OPACITY);
+            window->getWidget("cameras").setRenderingProperty(cv::viz::OPACITY, 1-current);
+        }
+        if (event.code == 'G') {
+            cv::viz::Viz3d* window = static_cast<cv::viz::Viz3d*>(data);
+            double current = window->getWidget("gt_cameras").getRenderingProperty(cv::viz::OPACITY);
+            window->getWidget("gt_cameras").setRenderingProperty(cv::viz::OPACITY, 1-current);
+        }
+        if (event.code == 'l') {
+            cv::viz::Viz3d* window = static_cast<cv::viz::Viz3d*>(data);
+            double current = window->getWidget("landmarks").getRenderingProperty(cv::viz::OPACITY);
+            window->getWidget("landmarks").setRenderingProperty(cv::viz::OPACITY, 1-current);
+        }
+        if (event.code == 'L') {
+            cv::viz::Viz3d* window = static_cast<cv::viz::Viz3d*>(data);
+            double current = window->getWidget("gt_landmarks").getRenderingProperty(cv::viz::OPACITY);
+            window->getWidget("gt_landmarks").setRenderingProperty(cv::viz::OPACITY, 1-current);
+        }
+        if (event.code == 'z') {
+            cv::viz::Viz3d* window = static_cast<cv::viz::Viz3d*>(data);
+            double current = window->getWidget("coordinate_system").getRenderingProperty(cv::viz::OPACITY);
+            window->getWidget("coordinate_system").setRenderingProperty(cv::viz::OPACITY, 1-current);
+        }
+    }
+}
+
 void visualize(const vector<Camera>& cameras, const map<int, pr::Vec3d>& landmarks, const map<int, pr::Vec3d>& gt_landmarks){
     cv::viz::Viz3d window("Map visualization");
 
@@ -50,6 +80,9 @@ void visualize(const vector<Camera>& cameras, const map<int, pr::Vec3d>& landmar
     gt_cameras_cloud.setRenderingProperty( cv::viz::POINT_SIZE, 5 );
     window.showWidget("gt_cameras", gt_cameras_cloud);
 
+    window.registerKeyboardCallback(keyboardCallback, &window);
+
+    window.showWidget("coordinate_system", cv::viz::WCoordinateSystem(0.1));
     window.spin();
 }
 
@@ -68,32 +101,6 @@ int main (int argc, char** argv) {
     vector<Camera> cameras = load_data(dataset_path);
     map<int, pr::Vec3d> gt_landmarks = load_landmarks(gt_landmark_positions);
     
-    // // For testing without noise
-    // for(auto& cam: cameras) {
-    //     // cam.orientation = cam.gt_orientation;
-    //     for(auto& kp: cam.keypoints) {
-    //         Vec3d dir = v2tRPY(cam.orientation).transpose() * (gt_landmarks[kp.id] - cam.gt_position); // gt dir vector in camera frame
-    //         dir.normalize();
-    //         double error = (skew(dir) * kp.direction_vector).transpose() * (skew(dir) * kp.direction_vector);
-    //         if (error > 0.2) kp.direction_vector = dir;
-    //     }
-    // }
-
-    // // For testing without outliers
-    // for(auto& cam: cameras) {
-    //     for (auto it = cam.keypoints.begin(); it != cam.keypoints.end(); ) {
-    //         Vec3d dir = v2tRPY(cam.orientation).transpose() * (gt_landmarks[it->id] - cam.gt_position); // gt dir vector in camera frame
-    //         dir.normalize();
-    //         double error = (skew(dir) * it->direction_vector).transpose() * (skew(dir) * it->direction_vector);
-    //         if (error > 0.9) {
-    //             it = cam.keypoints.erase(it); // elimina l'elemento e restituisce un iteratore successivo
-    //             cout << cam.id << " -> kp: " << it->id << endl;
-    //         } else {
-    //             ++it; // passa all'elemento successivo
-    //         }
-    //     }
-    // }
-
     cout << "0) Initialization...";
     init_translations(cameras);
     cout << "\tDONE" << endl << endl;
@@ -107,25 +114,7 @@ int main (int argc, char** argv) {
     cout << "DONE" << endl;
 
     cout << endl << "3) Landmarks Registration... " << endl;
-    double scaling = 10;
-    map<int, pr::Vec3d> positions;
-    map<int, pr::Vec3d> gt_positions;
-    for(auto& cam: cameras) {
-        cam.position *= scaling;
-        cam.gt_position *= scaling;
-        positions.insert({cam.id, cam.position});
-        gt_positions.insert({cam.id, cam.gt_position});
-    }
-    for(auto& gt_l: gt_landmarks) {
-        gt_l.second *= scaling;
-        gt_positions.insert(gt_l);
-    }
-    for(auto& l: landmarks) {
-        l.second *= scaling;
-        positions.insert(l); 
-    }
-    Sim3 transform = sicp_3d(positions, gt_positions, cameras[0].gt_position, 10);
-    // Sim3 transform = sicp_3d(landmarks, gt_landmarks, cameras[0].gt_position, 10);
+    Sim3 transform = sicp_3d(landmarks, gt_landmarks, cameras[0].gt_position, 10);
     cout << "sim3: " << endl << transform.as_matrix() << endl << endl;
     cout << "DONE" << endl << endl;
 
