@@ -77,6 +77,7 @@ namespace pr {
     Matrix3d Rz_prime(double rot_x);
     Matrix3d v2tRPY(const Vec3d& v);
     Vec3d tRPY2v(const Matrix3d& rot);
+    Matrix4d v2t(Eigen::Matrix<double, 6, 1> v);
 
     vector<Camera> load_data(string dataset_path);
 

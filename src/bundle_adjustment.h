@@ -10,9 +10,9 @@
 
 namespace pr {
 
-    void error_and_jacobian_BA_pose_landmark(const Camera& camera, const Vec3d& keypoint_dir_vector, const Vec3d& landmark, Vec3d& error, Eigen::MatrixXd& jacobians);
+    void error_and_jacobian_BA_pose_landmark(const Matrix4d& camera_pose, const Vec3d& keypoint_dir_vector, const Vec3d& landmark, Vec3d& error, Eigen::MatrixXd& jacobians);
 
-    void bundle_adjustment(vector<Camera>& cameras, map<int, Vec3d>& landmarks, int rounds);
+    void bundle_adjustment(vector<Camera>& cameras, map<int, Vec3d>& landmarks, int rounds, bool linear_constraint);
 
 }
 

@@ -93,7 +93,7 @@ int main (int argc, char** argv) {
     string gt_landmark_positions = "../../dataset_and_info/GT_landmarks.txt";
     // string output_dir = argv[3]; // out_landmark_positions.substr(0, out_camera_positions.rfind('/'));
     string output_dir = "../../out/";
-    int ba_rounds = 0;
+    int ba_rounds = 5;
     // int ba_rounds = stoi(argv[4]);
     string out_camera_positions = output_dir + "/cameras.txt";
     string out_landmark_positions = output_dir + "/landmarks.txt";
@@ -110,7 +110,8 @@ int main (int argc, char** argv) {
     cout << "\tDONE" << endl;
     
     cout << endl << "2) Bundle Adjustment... (" << ba_rounds << " rounds)" << endl;
-    bundle_adjustment(cameras, landmarks, ba_rounds);
+    bool ba_linear_constraint = true;
+    bundle_adjustment(cameras, landmarks, ba_rounds, ba_linear_constraint);
     cout << "DONE" << endl;
 
     cout << endl << "3) Landmarks Registration... " << endl;
