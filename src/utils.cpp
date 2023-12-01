@@ -94,7 +94,7 @@ namespace pr {
         double c=cos(rot_x);
         double s=sin(rot_x);
         Matrix3d R;
-        R << 1,  0, 0,
+        R << 0,  0, 0,
         0,  -s,  -c,
         0,  c,  -s;
         return R;
@@ -115,7 +115,7 @@ namespace pr {
         double s=sin(rot_y);
         Matrix3d R;
         R << -s,  0,  c,
-        0 , 1,  0,
+        0 , 0,  0,
         -c,  0, -s;
         return R;
     }
@@ -136,7 +136,7 @@ namespace pr {
         Matrix3d R;
         R << -s,  -c,  0,
         c,  -s,  0,
-        0,  0,  1;
+        0,  0,  0;
         return R;
     }
 
@@ -149,15 +149,22 @@ namespace pr {
     // ------ end adapted implementation ------ 
 
     Vec3d tRPY2v(const Matrix3d& rot) {
-        double alpha = atan2(-rot(1,2), rot(2,2));
-        double beta = asin(rot(0,2));
-        double gamma = atan2(-rot(0,1), rot(0,0));
-        // double beta = atan2( -rot(2,0), sqrt(pow(rot(2,1), 2) + pow(rot(2,2), 2)) );
-        // double alpha = atan2( rot(2,1)/cos(beta) , rot(2,2)/cos(beta) );
-        // double gamma = atan2( rot(1,0)/cos(beta) , rot(0,0)/cos(beta) );
+        // double alpha = atan2(-rot(1,2), rot(2,2));
+        // double beta  = asin(rot(0,2));
+        // double gamma = atan2(-rot(0,1), rot(0,0));
+        double beta = atan2( -rot(2,0), sqrt(pow(rot(2,1), 2) + pow(rot(2,2), 2)) );
+        double alpha = atan2( rot(2,1)/cos(beta) , rot(2,2)/cos(beta) );
+        double gamma = atan2( rot(1,0)/cos(beta) , rot(0,0)/cos(beta) );
         Vec3d v;
         v << alpha, beta, gamma;
         return v;
+    }
+
+    Matrix4d v2t(Eigen::Matrix<double, 6, 1> v) {
+        Eigen::MatrixXd transform = Eigen::MatrixXd::Identity(4,4);
+        transform.block<3,3>(0,0) = v2tRPY(v.block<3,1>(3,0));
+        transform.block<3,1>(0,3) = v.block<3,1>(0,0);
+        return transform;
     }
 
     vector<Camera> load_data(string dataset_path) {
@@ -256,7 +263,7 @@ namespace pr {
         v_hom.block<3,1>(0,0) = v;
         v_hom(3,1) = 1.0;
         auto res = sim3*v_hom;
-        return res.block<3,1>(0,0) * res(3,0);
+        return res.block<3,1>(0,0) / res(3,0);
         // return this->scale * (v2tRPY(this->rotation) * v + this->translation);
     }
 
