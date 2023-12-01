@@ -42,10 +42,16 @@ int main (int argc, char** argv) {
             auto cam_i = cameras[i];
             auto cam_j = cameras[j];
 
-            vector<cv::Vec3d> corr0;
-            vector<cv::Vec3d> corr1;
+            map<int, cv::Vec3d> corr0;
+            map<int, cv::Vec3d> corr1;
             find_correspondences(cam_i, cam_j, corr0, corr1);
-            Essential_Matrix structE = eight_point_algorithm(corr0, corr1);
+            vector<cv::Vec3d> corr0_as_vector;
+            vector<cv::Vec3d> corr1_as_vector;
+            for(auto corr0_i: corr0){
+                corr0_as_vector.push_back(corr0_i.second);
+                corr1_as_vector.push_back(corr1[corr0_i.first]);
+            }
+            Essential_Matrix structE = eight_point_algorithm(corr0_as_vector, corr1_as_vector);
             cout << endl << "Essential matrix: " << endl << structE.e << endl;
             // Check epipolar constaint
             double check = 0;
