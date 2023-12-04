@@ -1,10 +1,10 @@
-#include "icp_3d.h"
+#include "sicp_3d.h"
 
 namespace pr {
 
     // Lesson 23b_registration_on_a_manifold taken as reference
 
-    void error_and_jacobian_icp_3d(Sim3 state, Vec3d landmark, Vec3d gt_landmark, Vec3d& error, Eigen::MatrixXd& jacobian) {
+    void error_and_jacobian_sicp_3d(Sim3 state, Vec3d landmark, Vec3d gt_landmark, Vec3d& error, Eigen::MatrixXd& jacobian) {
 
         Vec3d z_hat = state * gt_landmark; // scale * ( R*gt_landmark + t )
         error = z_hat - landmark;
@@ -35,7 +35,7 @@ namespace pr {
                 jacobian.setZero();
                 auto gt_l = gt_landmarks[l.first];
 
-                error_and_jacobian_icp_3d(state, l.second, gt_l, error, jacobian);
+                error_and_jacobian_sicp_3d(state, l.second, gt_l, error, jacobian);
                 double chi = error.transpose() * error;
 
                 chi_tot += chi;

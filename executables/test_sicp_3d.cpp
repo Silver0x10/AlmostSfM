@@ -12,7 +12,7 @@ using namespace pr;
 using namespace Eigen;
 
 void visualize(const map<int, pr::Vec3d>& landmarks, const map<int, pr::Vec3d>& gt_landmarks){
-    cv::viz::Viz3d window("ICP 3D Test");
+    cv::viz::Viz3d window("SICP 3D Test");
 
     // Estimated Landmarks visualization (RED)
     std::vector<cv::Point3d> landmarks_cv;
@@ -34,7 +34,7 @@ void visualize(const map<int, pr::Vec3d>& landmarks, const map<int, pr::Vec3d>& 
 }
 
 int main (int argc, char** argv) {
-    cout << "Test ICP 3D:" << endl;
+    cout << "Test SICP 3D:" << endl;
 
     map<int, pr::Vec3d> gt_landmarks;
     for(int i=0; i<100; i++)

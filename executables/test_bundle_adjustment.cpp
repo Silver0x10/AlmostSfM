@@ -5,7 +5,7 @@
 #include "utils.h"
 #include "bundle_adjustment.h"
 #include "triangulation.h"
-#include "icp_3d.h"
+#include "sicp_3d.h"
 
 using namespace std;
 using namespace pr;
