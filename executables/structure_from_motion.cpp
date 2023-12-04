@@ -87,14 +87,11 @@ void visualize(const vector<Camera>& cameras, const map<int, pr::Vec3d>& landmar
 }
 
 int main (int argc, char** argv) {
-    // string dataset_path = argv[1]; // "../../dataset_and_info/dataset.txt";
-    string dataset_path = "../../dataset_and_info/dataset.txt";
-    // string gt_landmark_positions = argv[2]; // "../../dataset_and_info/GT_landmarks.txt";
-    string gt_landmark_positions = "../../dataset_and_info/GT_landmarks.txt";
-    // string output_dir = argv[3]; // out_landmark_positions.substr(0, out_camera_positions.rfind('/'));
-    string output_dir = "../../out/";
-    int ba_rounds = 5;
-    // int ba_rounds = stoi(argv[4]);
+    string dataset_path = argv[1]; // "../../dataset_and_info/dataset.txt";
+    string gt_landmark_positions = argv[2]; // "../../dataset_and_info/GT_landmarks.txt";
+    string output_dir = argv[3]; // "../../out/"
+    int ba_rounds = stoi(argv[4]); // 5
+    int sicp_rounds = stoi(argv[5]); // 200
     string out_camera_positions = output_dir + "/cameras.txt";
     string out_landmark_positions = output_dir + "/landmarks.txt";
 
@@ -115,7 +112,10 @@ int main (int argc, char** argv) {
     cout << "DONE" << endl;
 
     cout << endl << "3) Landmarks Registration... " << endl;
-    Sim3 transform = sicp_3d(landmarks, gt_landmarks, cameras[0].gt_position, 10);
+    Sim3 initial_guess = Sim3();
+    initial_guess.translation = cameras[0].gt_position-cameras[0].position;
+    initial_guess.rotation = tRPY2v(v2tRPY(cameras[0].gt_orientation).transpose()*v2tRPY(cameras[0].orientation));
+    Sim3 transform = sicp_3d(landmarks, gt_landmarks, sicp_max_iterations);
     cout << "sim3: " << endl << transform.as_matrix() << endl << endl;
     cout << "DONE" << endl << endl;
 

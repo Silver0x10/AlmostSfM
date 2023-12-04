@@ -23,7 +23,6 @@ namespace pr {
         for(int i=0; i<(int)(cameras.size()); ++i){
             for(int j=i+1; j<(int)(cameras.size()); ++j){
 
-                // Vec3d t_ij = v2tRPY(cameras[i].orientation).transpose() * ((cameras[j].gt_position - cameras[i].gt_position)); // GT for checking correctness
                 Vec3d t_ij = calculate_relative_position(cameras[i], cameras[j]);
                 if(t_ij.norm() == 0) continue;
 
@@ -52,6 +51,6 @@ namespace pr {
         // Eigen::VectorXf Ht = matrix_H * t_initialized;
         // cout << "norm: " << Ht.norm() << endl;
 
-        for(int i=1; i < (int)cameras.size(); i++) cameras[i].position = t_initialized.block<3,1>(3*(i-1), 0);
+        for(int i=1; i < (int)cameras.size(); i++) cameras[i].position = 10*t_initialized.block<3,1>(3*(i-1), 0);
     }
 }

@@ -4,19 +4,6 @@ namespace pr {
 
     // Lesson 23b_registration_on_a_manifold taken as reference
 
-    // void error_and_jacobian_icp_3d(Matrix4d state, Vec3d landmark, Vec3d gt_landmark, Vec3d& error, Eigen::MatrixXd& jacobian) {
-
-    //     Vec3d z_hat = state * landmark;
-    //     error = z_hat - gt_landmark;
-
-    //     // wrt the translation components:
-    //     jacobian.block<3,3>(0, 0).setIdentity(); 
-    //     // wrt the camera orientation:
-    //     jacobian.block<3,3>(0, 3) = skew(-z_hat);
-    //     // wrt the scaling component:
-    //     jacobian.block<3,1>(0, 6) = z_hat; 
-    // }
-
     void error_and_jacobian_icp_3d(Sim3 state, Vec3d landmark, Vec3d gt_landmark, Vec3d& error, Eigen::MatrixXd& jacobian) {
 
         Vec3d z_hat = state * gt_landmark; // scale * ( R*gt_landmark + t )
@@ -39,7 +26,6 @@ namespace pr {
         Eigen::MatrixXd jacobian(3, 7);
 
         for (int iteration = 0; iteration < max_iterations; iteration++) {
-            cout << "ICP 3D iteration: " << iteration << "\t->\t";
             matrix_H.setZero();
             b.setZero();
             double chi_tot = 0.0;
@@ -49,19 +35,16 @@ namespace pr {
                 jacobian.setZero();
                 auto gt_l = gt_landmarks[l.first];
 
-                // error_and_jacobian_icp_3d(state_matrix, l.second, gt_l, error, jacobian);
                 error_and_jacobian_icp_3d(state, l.second, gt_l, error, jacobian);
                 double chi = error.transpose() * error;
 
                 chi_tot += chi;
-                if(chi >= 1e6) continue;
 
                 matrix_H += jacobian.transpose() * jacobian;
                 b += jacobian.transpose()*error;
             }
-
-            cout << "Error: " << chi_tot << endl;
-            if(chi_tot < 0.01) break;
+            if(iteration % 20 == 0 or iteration == max_iterations-1) 
+                cout << "ICP 3D iteration: " << iteration << "\t->\tError: " << chi_tot << endl;
             
             matrix_H += 10.0 * Eigen::MatrixXd::Identity(7, 7);
 
