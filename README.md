@@ -57,6 +57,7 @@ At the end a window like that in the above image should appear, showing:
 <br/> 
 
 # **Hot to Run**
+**Compiler:** GCC 11.3.0
 ```bash
  ./build/executables/sfm <Dataset path> <GT_Landmarks path> <Output directory>  <BundleAdjustment rounds> <SICP rounds>
 ```
