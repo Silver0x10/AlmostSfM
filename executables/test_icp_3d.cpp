@@ -19,7 +19,7 @@ void visualize(const map<int, pr::Vec3d>& landmarks, const map<int, pr::Vec3d>& 
     for(const auto& l: landmarks) 
         landmarks_cv.push_back( cv::Point3d(l.second.x(), l.second.y(), l.second.z()) );
     cv::viz::WCloud landmarks_cloud(landmarks_cv, cv::viz::Color::red());
-    landmarks_cloud.setRenderingProperty( cv::viz::POINT_SIZE, 5 );
+    landmarks_cloud.setRenderingProperty( cv::viz::POINT_SIZE, 7 );
     window.showWidget("landmarks", landmarks_cloud);
 
     // GT Landmarks visualization (GREEN)
@@ -36,20 +36,18 @@ void visualize(const map<int, pr::Vec3d>& landmarks, const map<int, pr::Vec3d>& 
 int main (int argc, char** argv) {
     cout << "Test ICP 3D:" << endl;
 
-    string dataset_path = argv[1]; // "../../dataset_and_info/dataset.txt";
-    vector<Camera> cameras = load_data(dataset_path);
+    map<int, pr::Vec3d> gt_landmarks;
+    for(int i=0; i<100; i++)
+        gt_landmarks.insert({i, (Vec3d::Random() - Vec3d::Ones()*0.5)*10});
 
-
-    string gt_landmark_positions = argv[2]; //"../../dataset_and_info/GT_landmarks.txt";
-    map<int, pr::Vec3d> gt_landmarks = load_landmarks(gt_landmark_positions);
-
-    double scale;
+    double scale, inv_scaling;
     Vec3d rotation; 
     Vec3d translation; 
-
-    scale = log(0.5);
+    
+    inv_scaling = 0.5;
+    scale = log(inv_scaling);
     rotation << -M_PI/2, M_PI/2, -M_PI;
-    translation << 0.1, 0.2, 0.5;
+    translation << 10, 0.2, 0.5;
     Sim3 transform = Sim3(scale, rotation, translation);
 
     map<int, pr::Vec3d> landmarks;
@@ -58,12 +56,19 @@ int main (int argc, char** argv) {
         landmarks.insert({gt_l.first, transformed_gt_l});
     }
 
-    int icp_iterations = 5;
-    Sim3 estimated_transform = sicp_3d(landmarks, gt_landmarks, cameras[0].gt_position, icp_iterations);
-    cout << endl << "s_hat: \t" << estimated_transform.scale << " \t\t\ts_gt: \t" << exp(scale) << endl;
-    cout << "R_hat: \t" << estimated_transform.rotation.transpose() << "\tR_gt: \t" << rotation.transpose() << endl;
-    cout << "t_hat: \t" << estimated_transform.translation.transpose() << "\tt_gt: \t" << translation.transpose() << endl;
-    
+    // Sim3 initial_guess = Sim3();
+    Sim3 initial_guess = transform;
+    initial_guess.translation += Vec3d(-4,0.7,-0.7);
+    initial_guess.translation += Vec3d::Ones()*0.4;
+    initial_guess.scale += 0.1;
+
+    int icp_max_iterations = 100;
+    // Sim3 estimated_transform = sicp_3d(landmarks, gt_landmarks, icp_max_iterations);
+    Sim3 estimated_transform = sicp_3d(landmarks, gt_landmarks, icp_max_iterations, initial_guess);
+    cout << endl << "s_hat: \t" << estimated_transform.scale << " \t \t \t \ts_gt: \t" << exp(scale) << endl;
+    cout << "R_hat: \t" << estimated_transform.rotation.transpose() << "\t \t \tR_gt: \t" << rotation.transpose() << endl;
+    cout << "t_hat: \t" << estimated_transform.translation.transpose() << " \t \tt_gt: \t" << translation.transpose() << endl;
+
     for(auto& gt_l: gt_landmarks) gt_l.second = estimated_transform * gt_l.second;
     visualize(landmarks, gt_landmarks);
 

@@ -63,7 +63,7 @@ namespace pr {
 
             Sim3 inverse();
 
-            void box_plus(Vec3d translation, double scale, Vec3d rotation);
+            void box_plus(Vec3d translation, Vec3d rotation, double scale);
     };
     
     void quaternion_to_RPY(double (&orientation)[3]);

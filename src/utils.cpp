@@ -148,6 +148,7 @@ namespace pr {
 
     // ------ end adapted implementation ------ 
 
+    // TODO: check correctness
     Vec3d tRPY2v(const Matrix3d& rot) {
         // double alpha = atan2(-rot(1,2), rot(2,2));
         // double beta  = asin(rot(0,2));
@@ -263,25 +264,25 @@ namespace pr {
         v_hom.block<3,1>(0,0) = v;
         v_hom(3,1) = 1.0;
         auto res = sim3*v_hom;
-        return res.block<3,1>(0,0) / res(3,0);
+        return res.block<3,1>(0,0) * res(3,0);
         // return this->scale * (v2tRPY(this->rotation) * v + this->translation);
     }
 
-    void Sim3::box_plus(Vec3d d_translation, double d_scale, Vec3d d_rotation) {
+    void Sim3::box_plus(Vec3d d_translation, Vec3d d_rotation, double d_scale) {
         Sim3 d_x = Sim3(d_scale, d_rotation, d_translation);
         Matrix4d x_prime = d_x.as_matrix() * this->as_matrix();
         this->translation = x_prime.block<3,1>(0,3);
         this->scale = x_prime(3,3);
+        // this->rotation = x_prime.block<3,3>(0,0).eulerAngles(2,1,0).reverse();
         this->rotation = tRPY2v(x_prime.block<3,3>(0,0));
-        // this->translation = v2tRPY(d_rotation)*this->translation + d_translation*this->scale;
-        // this->scale *= exp(d_scale);
-        // this->rotation = tRPY2v( v2tRPY(d_rotation) * v2tRPY(this->rotation) );
     }
 
     Sim3 Sim3::inverse(){
-        double scale = log(1/this->scale);
-        Vec3d rotation = tRPY2v( v2tRPY(this->rotation).transpose() );
-        Vec3d translation = -this->translation;
+        Matrix4d inverse = this->as_matrix().inverse();
+        double scale = log(inverse(3,3));
+        // Vec3d rotation = inverse.block<3,3>(0,0).eulerAngles(2,1,0).reverse();;
+        Vec3d rotation = tRPY2v( inverse.block<3,3>(0,0) );
+        Vec3d translation = inverse.block<3,1>(0,3);
         return Sim3(scale, rotation, translation);
     }
 
