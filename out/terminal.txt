@@ -2,33 +2,37 @@
 
 1) Triangulation... 	DONE
 
-2) Bundle Adjustment... (1 rounds)
-BA iteration: 0	->	chi_tot error: 2494.93
+2) Bundle Adjustment... (5 rounds)
+BA iteration: 0	->	chi_tot error: 35.9946
+BA iteration: 1	->	chi_tot error: 3.10456
+BA iteration: 2	->	chi_tot error: 1.03332
+BA iteration: 3	->	chi_tot error: 0.82148
+BA iteration: 4	->	chi_tot error: 0.781834
 DONE
 
 3) Landmarks Registration... 
-ICP 3D iteration: 0	->	Error: 4505.74
-ICP 3D iteration: 1	->	Error: 671.268
-ICP 3D iteration: 2	->	Error: 119.103
-ICP 3D iteration: 3	->	Error: 33.6444
-ICP 3D iteration: 4	->	Error: 21.602
-ICP 3D iteration: 5	->	Error: 21.4457
-ICP 3D iteration: 6	->	Error: 21.3706
-ICP 3D iteration: 7	->	Error: 21.325
-ICP 3D iteration: 8	->	Error: 21.294
-ICP 3D iteration: 9	->	Error: 21.2713
+ICP 3D iteration: 0	->	Error: 4781.6
+ICP 3D iteration: 20	->	Error: 0.143762
+ICP 3D iteration: 40	->	Error: 0.0784742
+ICP 3D iteration: 60	->	Error: 0.0443795
+ICP 3D iteration: 80	->	Error: 0.0265706
+ICP 3D iteration: 100	->	Error: 0.0172665
+ICP 3D iteration: 120	->	Error: 0.0124047
+ICP 3D iteration: 140	->	Error: 0.00986384
+ICP 3D iteration: 160	->	Error: 0.00853579
+ICP 3D iteration: 180	->	Error: 0.00784158
+ICP 3D iteration: 199	->	Error: 0.00749177
 sim3: 
-   0.879335    0.142168   -0.454487  -0.0670249
- -0.0191191    0.964166    0.264608 -0.00166583
-    0.47582    -0.22399    0.850543   0.0878921
-          0           0           0 0.000256807
+ 0.00672828    0.999977 0.000723445   0.0198779
+   0.995236 -0.00676674   0.0972636 -0.00757849
+  0.0972663 6.55813e-05   -0.995258    -5.02104
+          0           0           0    0.140286
 
-scale: 0.000256807	1.00026	-8.26719	
 DONE
 
 Camera positions saved in: ./out/cameras.txt
 Landmark positions saved in: ./out/landmarks.txt
 
 4) Evaluation... 
-Landmarks RMSE: 0.497131
+Landmarks RMSE: 0.0093253
 DONE

@@ -53,7 +53,7 @@ void visualize(const vector<Camera>& cameras, const map<int, pr::Vec3d>& landmar
     for(const auto& l: landmarks) 
         landmarks_cv.push_back( cv::Point3d(l.second.x(), l.second.y(), l.second.z()) );
     cv::viz::WCloud landmarks_cloud(landmarks_cv, cv::viz::Color::red());
-    landmarks_cloud.setRenderingProperty( cv::viz::POINT_SIZE, 5 );
+    landmarks_cloud.setRenderingProperty( cv::viz::POINT_SIZE, 7 );
     window.showWidget("landmarks", landmarks_cloud);
 
     // Estimated Cameras visualization (BLUE)
@@ -61,7 +61,7 @@ void visualize(const vector<Camera>& cameras, const map<int, pr::Vec3d>& landmar
     for(const auto& c: cameras) 
         cameras_cv.push_back( cv::Point3d( c.position.x(), c.position.y(), c.position.z()) );
     cv::viz::WCloud cameras_cloud(cameras_cv, cv::viz::Color::blue());
-    cameras_cloud.setRenderingProperty( cv::viz::POINT_SIZE, 5 );
+    cameras_cloud.setRenderingProperty( cv::viz::POINT_SIZE, 7 );
     window.showWidget("cameras", cameras_cloud);
 
     // GT Landmarks visualization (GREEN)
