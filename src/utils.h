@@ -98,7 +98,7 @@ namespace pr {
     double rmse(const map<int, Vec3d>& landmarks, const map<int, Vec3d>& gt_landmarks);
 
     void save_landmarks(const map<int, pr::Vec3d>& landmarks, string output_path);
-    void save_camera_positions(const vector<Camera>& cameras, string output_path);
+    void save_camera_poses(const vector<Camera>& cameras, string output_path);
     map<int, pr::Vec3d> load_landmarks(string path);
 
 

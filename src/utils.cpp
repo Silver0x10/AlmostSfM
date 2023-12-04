@@ -215,9 +215,9 @@ namespace pr {
         file_stream.close();
     }
 
-    void save_camera_positions(const vector<Camera>& cameras, string output_path){
+    void save_camera_poses(const vector<Camera>& cameras, string output_path){
         ofstream file_stream(output_path);
-        for(const auto& cam: cameras) file_stream << "C: " << cam.id << "\t" << cam.position.transpose() << endl;
+        for(const auto& cam: cameras) file_stream << "C: " << cam.id << "\t" << cam.position.transpose() << "\t" << RPY_to_quaternion(cam.orientation).transpose() << endl;
         file_stream.close();
     }
 

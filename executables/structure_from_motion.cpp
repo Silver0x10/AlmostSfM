@@ -120,8 +120,8 @@ int main (int argc, char** argv) {
     cout << "DONE" << endl << endl;
 
     // Save cameras and landmarks data
-    save_camera_positions(cameras, out_camera_positions);
-    cout << "Camera positions saved in: " << out_camera_positions << endl;
+    save_camera_poses(cameras, out_camera_positions);
+    cout << "Camera poses saved in: " << out_camera_positions << endl;
     save_landmarks(landmarks, out_landmark_positions);
     cout << "Landmark positions saved in: " << out_landmark_positions << endl << endl;
 
