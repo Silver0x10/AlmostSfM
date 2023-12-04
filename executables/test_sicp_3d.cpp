@@ -5,7 +5,7 @@
 #include <cmath>
 #include <opencv2/viz.hpp>
 #include "utils.h"
-#include "icp_3d.h"
+#include "sicp_3d.h"
 
 using namespace std;
 using namespace pr;

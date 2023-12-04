@@ -7,7 +7,7 @@
 #include <opencv2/viz.hpp>
 #include "utils.h"
 #include "relative_position_calculator.h"
-#include "icp_3d.h"
+#include "sicp_3d.h"
 #include "init_translations.h"
 
 

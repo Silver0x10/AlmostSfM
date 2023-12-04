@@ -115,7 +115,7 @@ int main (int argc, char** argv) {
     Sim3 initial_guess = Sim3();
     initial_guess.translation = cameras[0].gt_position-cameras[0].position;
     initial_guess.rotation = tRPY2v(v2tRPY(cameras[0].gt_orientation).transpose()*v2tRPY(cameras[0].orientation));
-    Sim3 transform = sicp_3d(landmarks, gt_landmarks, sicp_max_iterations, initial_guess);
+    Sim3 transform = sicp_3d(landmarks, gt_landmarks, sicp_rounds, initial_guess);
     cout << "sim3: " << endl << transform.as_matrix() << endl << endl;
     cout << "DONE" << endl << endl;
 
