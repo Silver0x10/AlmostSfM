@@ -59,7 +59,10 @@ int main (int argc, char** argv) {
         cam_positions.insert({cam.id, cam.position});
         cam_gt_positions.insert({cam.id, cam.gt_position});
     }
-    auto transform = sicp_3d(cam_positions, cam_gt_positions, cameras[0].gt_position, 10);
+    Sim3 initial_guess = Sim3();
+    initial_guess.translation = cameras[0].gt_position-cameras[0].position;
+    initial_guess.rotation = tRPY2v(v2tRPY(cameras[0].gt_orientation).transpose()*v2tRPY(cameras[0].orientation));
+    auto transform = sicp_3d(cam_positions, cam_gt_positions, 200, initial_guess);
     for(auto& cam: cameras) cam.gt_position = transform * cam.gt_position;
 
     visualize(cameras);
