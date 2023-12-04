@@ -16,7 +16,7 @@ To get the 3D *position of each landmark* using *direction vectors* to calculate
 Each position is calculated solving a LS problem using all the direction vectors corresponding to the same landmark coming from all the available cameras.
 
 ## Step 2 - Bundle Adjustment
-Final refinement of camera poses and landmarks position formulated as a LS problem [see **src/bundle_adjustment.\***] trying to minimize the **Pose-Landmark error** (cross product between measured and predicted direction vectors).
+Final refinement of camera poses and landmarks position formulated as a LS problem [see **src/bundle_adjustment.\***] trying to minimize the **Pose-Landmark error** (difference between measured and predicted direction vectors).
 
 ## Step 3 - Landmarks Registration
 Estimation of the Sim(3) tranformation between estimated and reference landmark positions [see the [reference](https://gitlab.com/grisetti/probabilistic_robotics_2022_23/-/blob/main/slides/probabilistic_robotics_23b_registration_on_a_manifold.pdf) and **src/icp_3d.\***]
@@ -41,12 +41,12 @@ For each camera pair:
 3) Compare the two delta rotations: *trace(eye(3) - R_delta^T * R_delta_gt)*
 
 ### Landmark positions:
-1) Transform each landmark position using the Sim(3) transformation estimated in Step 3
-2) Compute the Root Mean Squared Error between estimated and reference landmark positions
+1) Transform each GT landmark position using the Sim(3) transformation estimated in Step 3
+2) Compute the Root Mean Squared Error between estimated and transformed GT landmark positions
 
 
 ## Step 5 - Visualization
-<div align="center"> <img src="out/visualization.png" width="70%"/> </div>
+<div align="center"> <img src="imgs/final.png" width="80%"/> </div>
 At the end a window like that in the above image should appear, showing:
 
 - Estimated camera positions in blue
@@ -56,21 +56,18 @@ At the end a window like that in the above image should appear, showing:
 
 <br/> 
 
-**NOTE:** wrong **positions initialization** using original direction vectors. The visualization above was produced using GT direction vectors.
-
-
 # **Hot to Run**
 ```bash
- ./build/executables/sfm <Dataset path> <GT_Landmarks path> <Output directory>  <BundleAdjustment rounds>
+ ./build/executables/sfm <Dataset path> <GT_Landmarks path> <Output directory>  <BundleAdjustment rounds> <SICP rounds>
 ```
 
 ## **Final outputs**
 In the *out* directory it's possible to find the output produced by the following command:
 ```bash
- ./build/executables/sfm ../dataset_and_info/dataset.txt dataset_and_info/GT_landmarks.txt ./out  5
+ ./build/executables/sfm dataset_and_info/dataset.txt dataset_and_info/GT_landmarks.txt out/ 5 200
 ```
 
-- (**cameras.txt**) Global position of each camera 
+- (**cameras.txt**) Global position and orientation of each camera 
 - (**landmarks.txt**) Global position of each landmark 
 - (**camera_position_errors.txt**) Camera positions error values 
 - (**camera_rotation_errors.txt**) Camera rotations error values 
@@ -78,29 +75,24 @@ In the *out* directory it's possible to find the output produced by the followin
 - (**terminal.txt**) Output printed on the terminal
 
 # Tests
-
-- [X] icp_3d (```build/executables/test_icp_3d <Dataset Path> <GT Landmarks Path>```)
+- [X] sicp_3d (```build/executables/test_sicp_3d```)
   - [X] v2RPY
   - [X] Sim3
     - [X] * operator
     - [X] boxplus
-<div align="center"> 
-  <img src="out/icp_test_visualization.png" width="70%"/> 
-  <img src="out/icp_test_terminal.png" width="70%"/>
-</div>
+<div align="center"> <img src="imgs/sicp_test_visualization.png" width="70%"/> </div>
   
 - [X] triangulation (```build/executables/test_triangulation```) --> **ok BUT not robust to outliers**
-<div align="center"> <img src="out/triangulation_test_visualization_simple.png" width="70%"/> </div>
-<div align="center"> <img src="out/triangulation_test_visualization.png" width="70%"/> </div>
+<div align="center"> <img src="imgs/triangulation_test_visualization_simple.png" width="70%"/> </div>
+<div align="center"> <img src="imgs/triangulation_test_visualization.png" width="70%"/> </div>
 
-- [X] calculate_relative_position (```build/executables/test_relative_pos <Dataset Path> <GT Landmarks Path>```)
-  - [X] eight_point_algorithm
-  - [X] extract_t
-<div align="center"> <img src="out/relative_position_test_terminal.png" width="70%"/> </div>
+- [X] calculate_relative_position (```build/executables/test_relative_pos <Dataset Path> <GT Landmarks Path>```) (works using OpenCV)
+  - [ ] eight_point_algorithm (custom implementation not working)
+  - [ ] extract_t (custom implementation not working)
 
 - [X] init_translations (```build/executables/test_init_t <Dataset Path> <GT Landmarks Path>```)
-<div align="center"> <img src="out/init_translations_test_visualization.png" width="70%"/> </div>
+<div align="center"> <img src="imgs/init_translations_test_visualization.png" width="70%"/> </div>
 
-- [ ] bundle_adjustment (```build/executables/test_BA <Dataset Path> <GT Landmarks Path>```)
-<div align="center"> <img src="out/BA_test_visualization.png" width="70%"/> </div>
+- [X] bundle_adjustment (```build/executables/test_BA <Input BA Path> <GT Landmarks Path>```)
 
+- [X] data_loading
