@@ -3,7 +3,7 @@
 ## Step 0 - Translations initialization
 Least Squares to estimate the *position of each camera* (MultiPoseRegistration-like) using the *epipolar constraint as error function* and the estimated global camera orientations from project 1a.<br/>
 
-The initialized translations are extracted from the null space of the H matrix of the LS problem selecting one of the rightmost columns of the V matrix of its SVD decomposition.These rightmost column in fact form a basis of the H matrix null space. [see **src/init_translation.\***] <br/>
+The initialized translations are extracted from the null space of the H matrix of the LS problem selecting one of the rightmost columns of the V matrix of its SVD decomposition. The rightmost column in fact form a basis of the H matrix null space. [see **src/init_translation.\***] <br/>
 
 The relative position between each pair of cameras is required for epipolar constraint evaluation. It is estimated through the following procedure [see **src/relative_position_calculator.\***]:
 1) *8-point-algorithm* to estimate the *essential matrix* using corresponding direction vectors of the two cameras
